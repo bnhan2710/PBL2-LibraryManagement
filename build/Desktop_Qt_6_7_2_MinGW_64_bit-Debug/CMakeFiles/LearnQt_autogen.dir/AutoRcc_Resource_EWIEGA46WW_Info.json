@@ -1,0 +1,32 @@
+{
+	"BUILD_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/LearnQt_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt",
+	"CMAKE_SOURCE_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/LearnQt_autogen/include",
+	"INPUTS" : 
+	[
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/open-book.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/mail.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/confirmPasword.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/password.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/book.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/Background_1.jpg",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/book-stack.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/img/user.png"
+	],
+	"LOCK_FILE" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/CMakeFiles/LearnQt_autogen.dir/AutoRcc_Resource_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "Resource" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_Resource.cpp",
+	"RCC_EXECUTABLE" : "C:/Qt/6.7.2/mingw_64/./bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/CMakeFiles/LearnQt_autogen.dir/AutoRcc_Resource_EWIEGA46WW_Used.txt",
+	"SOURCE" : "C:/Users/ADMIN/Documents/code/PBL_2/LearnQt/Resource.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}
