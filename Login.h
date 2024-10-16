@@ -1,9 +1,7 @@
 #ifndef LOGIN_H
 #define LOGIN_H
-
 #include <QMainWindow>
 #include <QApplication>
-#include "learnqt.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class Login;
@@ -29,7 +27,6 @@ public slots:
 private:
     Ui::Login *ui;
     QScreen *mainScreen;
-    LearnQt *learnqt;
 
 };
 

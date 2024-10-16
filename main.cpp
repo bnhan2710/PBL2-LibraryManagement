@@ -1,4 +1,3 @@
-#include "learnqt.h"
 #include "Login.h"
 
 #include <QApplication>

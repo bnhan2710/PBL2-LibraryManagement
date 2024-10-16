@@ -1,62 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "Login.h"
 #include "ui_login.h"
 #include <QMessageBox>
@@ -130,7 +71,6 @@ void Login::getMainScreen() {
 
 void Login::addTab() {
     hide();
-    learnqt->show();
 }
 
 void Login::showAlert( const QString AlertInformation ) {
