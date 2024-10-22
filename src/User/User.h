@@ -13,7 +13,7 @@ private:
     Role role;
 public:
     User();
-    User( int userId, string email, string username, string password, string phone, Role role );
+    User( int userId, string& email, string& username, string& password, string& phone, Role& role );
     void setUserId( int userId );
     int getUserId();
     void setEmail( string email );

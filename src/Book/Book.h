@@ -21,7 +21,7 @@ private:
     Date publishedDate;
 public:
     Book();
-    Book( int bookId, string title, string author, string publisher, int year, int quantity, int price );
+    Book( int bookId, string& title, Author& author, Publisher& publisher, Category& category, int& quantity, Date& publishedDate );
     void setBookId( int bookId );
     int getBookId();
     void setTitle( string title );

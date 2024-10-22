@@ -19,7 +19,7 @@ private:
     string status;
 public:
     BorrowReturn();
-    BorrowReturn(int borrowReturnId, User user, Book book, Date borrowDate, Date returnDate, string status);
+    BorrowReturn(int borrowReturnId, User& user, Book& book, Date& borrowDate, Date& returnDate, string& status);
     void setBorrowReturnId(int borrowReturnId);
     int getBorrowReturnId();
     void setUser(User user);

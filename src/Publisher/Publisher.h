@@ -10,7 +10,7 @@ private:
     string contactInfo;
 public:
     Publisher();
-    Publisher(int publisherId, string publisherName, string address, string contactInfo);
+    Publisher(int publisherId, string& publisherName, string& address, string& contactInfo);
     void setPublisherId(int publisherId);
     int getPublisherId();
     void setPublisherName(string publisherName);

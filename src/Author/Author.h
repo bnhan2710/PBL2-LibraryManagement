@@ -15,7 +15,7 @@ private:
     string authorInfo;
 public:
     Author();
-    Author(int authorId, string authorName, string authorInfo);
+    Author(int authorId, string& authorName, Date& birthDate, string& authorInfo);
     void setAuthorId(int authorId);
     int getAuthorId();
     void setAuthorName(string authorName);

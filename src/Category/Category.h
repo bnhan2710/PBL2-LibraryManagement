@@ -8,7 +8,7 @@ private:
     string categoryName;
 public:
     Category();
-    Category(int categoryId, string categoryName);
+    Category(int categoryId, string& categoryName);
     void setCategoryId(int categoryId);
     int getCategoryId();
     void setCategoryName(string categoryName);

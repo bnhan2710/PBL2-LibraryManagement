@@ -8,7 +8,7 @@ private:
     string roleName;
 public:
     Role();
-    Role(string roleId, string roleName);
+    Role(string& roleId, string& roleName);
     void setRoleId(string roleId);
     string getRoleId();
     void setRoleName(string roleName);
