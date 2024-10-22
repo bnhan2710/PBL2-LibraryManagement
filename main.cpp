@@ -1,5 +1,4 @@
 #include "Login.h"
-
 #include <QApplication>
 #include <QScreen>
 

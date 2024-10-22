@@ -1,1 +1,28 @@
-//
+#ifndef AUTHOR_H
+#define AUTHOR_H
+#include <string>
+using namespace std;
+struct Date {
+    int day;
+    int month;
+    int year;
+};
+class Author {
+private:
+    int authorId;
+    string authorName;
+    Date birthDate;
+    string authorInfo;
+public:
+    Author();
+    Author(int authorId, string authorName, string authorInfo);
+    void setAuthorId(int authorId);
+    int getAuthorId();
+    void setAuthorName(string authorName);
+    string getAuthorName();
+    void setBirthDate(Date birthDate);
+    Date getBirthDate();
+    void setAuthorInfo(string authorInfo);
+    string getAuthorInfo();
+};
+#endif

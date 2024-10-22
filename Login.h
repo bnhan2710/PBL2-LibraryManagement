@@ -2,6 +2,13 @@
 #define LOGIN_H
 #include <QMainWindow>
 #include <QApplication>
+#include <QMessageBox>
+#include <QApplication>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPixmap>
+#include <QFile>
+#include <QTextStream>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class Login;
@@ -16,14 +23,15 @@ public:
     ~Login();
 
     void showAlert( const QString );
-    void getMainScreen();
+    void getMainScreen(void);
 signals:
 public slots:
     void loginRedirect( void );
     void registerRedirect( void );
     void validate( void );
     void addTab( void );
-
+    void registerToApp( void );
+    void loginToApp( void );
 private:
     Ui::Login *ui;
     QScreen *mainScreen;

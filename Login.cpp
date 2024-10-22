@@ -1,10 +1,5 @@
 #include "Login.h"
 #include "ui_login.h"
-#include <QMessageBox>
-#include <QApplication>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPixmap>
 
 Login::Login(QMainWindow *parent)
     : QMainWindow(parent)
@@ -81,12 +76,19 @@ void Login::validate() {
     QString username = ui->userLine_1->text();
     QString password = ui->passLine_1->text();
 
-    if ( username == "ADMIN" && password == "ADMIN" ) {
-        showAlert("Login successful" );
-    } else {
-        showAlert("Login Fail");
-    }
+}
 
+void Login::registerToApp() {
+    QString email = ui->emailLine->text();
+    QString username = ui->userLine_1->text();
+    QString password = ui->passLine_1->text();
+    QString confirmPassword = ui->confimPassLine->text();
+    QFile file("User_Account.txt");
+    if( file.open( QIODevice::Append | QIODevice::ReadWrite )) {
+        QTextStream stream( &file );
+        stream << email << " " << username << " " << password << std::endl;
+    }
+    file.close();
 }
 
 Login::~Login()

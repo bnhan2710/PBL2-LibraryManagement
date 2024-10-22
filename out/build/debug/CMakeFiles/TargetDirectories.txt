@@ -1,0 +1,8 @@
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/PBL2-LibraryManagement.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/edit_cache.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/rebuild_cache.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/list_install_components.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/install.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/install/local.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/PBL2-LibraryManagement_autogen_timestamp_deps.dir
+C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/PBL2-LibraryManagement_autogen.dir

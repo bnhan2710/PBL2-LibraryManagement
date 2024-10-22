@@ -8,6 +8,8 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+file(GLOB_RECURSE SRC_HEADERS src/**/*.h)
+file(GLOB_RECURSE SRC_SOURCES src/**/*.cpp)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
@@ -16,20 +18,17 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 set(PROJECT_SOURCES
         Login.cpp
         Login.h
+        Login.ui
         main.cpp
         Resource.qrc
-        src/Author/Author.cpp src/Author/Author.h src/Book/Book.cpp src/Book/Book.h src/BorrowReturn/BorrowReturn.cpp src/BorrowReturn/BorrowReturn.h src/Category/Category.cpp src/Category/Category.h src/Publisher/Publisher.cpp src/Publisher/Publisher.h src/Role/Role.cpp src/Role/Role.h src/User/User.cpp src/User/User.h
+        ${SRC_HEADERS}
+        ${SRC_SOURCES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(PBL2-LibraryManagement
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        Login.cpp
-        Login.h
-        main.cpp
-        Resource.qrc
-        src/Author/Author.cpp src/Author/Author.h src/Book/Book.cpp src/Book/Book.h src/BorrowReturn/BorrowReturn.cpp src/BorrowReturn/BorrowReturn.h src/Category/Category.cpp src/Category/Category.h src/Publisher/Publisher.cpp src/Publisher/Publisher.h src/Role/Role.cpp src/Role/Role.h src/User/User.cpp src/User/User.h
     )
 else()
     add_executable(PBL2-LibraryManagement

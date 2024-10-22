@@ -1,0 +1,30 @@
+{
+	"BUILD_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/PBL2-LibraryManagement_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement",
+	"CMAKE_SOURCE_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement",
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/PBL2-LibraryManagement_autogen/include",
+	"INPUTS" : 
+	[
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/open-book.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/mail.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/confirmPasword.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/password.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/book.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/Background_1.jpg",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/book-stack.png",
+		"C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/img/user.png"
+	],
+	"LOCK_FILE" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/PBL2-LibraryManagement_autogen.dir/AutoRcc_Resource_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "Resource" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_Resource.cpp",
+	"RCC_EXECUTABLE" : "C:/Qt/6.8.0/msvc2022_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/out/build/debug/CMakeFiles/PBL2-LibraryManagement_autogen.dir/AutoRcc_Resource_EWIEGA46WW_Used.txt",
+	"SOURCE" : "C:/Users/ADMIN/Documents/code/PBL_2/Qt-Project/PBL2-LibraryManagement/Resource.qrc",
+	"VERBOSITY" : 0
+}
