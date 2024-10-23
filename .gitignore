@@ -70,5 +70,8 @@ CMakeLists.txt.user*
 # Binaries
 # --------
 *.dll
-*.exe
+*.exe/
 
+.vscode/
+.vs/
+.build/
