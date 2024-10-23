@@ -1,7 +1,7 @@
 #ifndef USER_H
 #define USER_H
 #include <string>
-#include "Role.h"
+// #include "Role.h"
 using namespace std;
 class User {
 private:
@@ -10,10 +10,10 @@ private:
     string username;
     string password;
     string phone;
-    Role role;
+    // Role role;
 public:
     User();
-    User( int userId, string& email, string& username, string& password, string& phone, Role& role );
+    User( int userId, string& email, string& username, string& password, string& phone );
     void setUserId( int userId );
     int getUserId();
     void setEmail( string email );
@@ -24,7 +24,7 @@ public:
     string getPassword();
     void setPhone( string phone );
     string getPhone();
-    void setRole( Role role );
-    Role getRole();
+    // void setRole( Role role );
+    // Role getRole();
 };
 #endif

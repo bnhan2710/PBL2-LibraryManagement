@@ -75,3 +75,4 @@ CMakeLists.txt.user*
 .vscode/
 .vs/
 .build/
+out

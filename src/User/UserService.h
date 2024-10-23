@@ -1,4 +1,4 @@
-#include "./User.h";
+#include "./User.h"
 
 class UserService {
     private:
@@ -8,7 +8,7 @@ class UserService {
     static UserService* initUserService();
     ~UserService();
 
-    void createUser(User user);
+    void registerAccount(User user);
     void updateUser(User user);
     void deleteUser(int userId);
     User getUserById(int userId);

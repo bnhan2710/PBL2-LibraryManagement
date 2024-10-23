@@ -1,4 +1,4 @@
-#include "User.h";
+#include "User.h"
 
 User::User() {
     this->userId = 0;
@@ -6,16 +6,16 @@ User::User() {
     this->username = "";
     this->password = "";
     this->phone = "";
-    this->role = Role();
+    // this->role = Role();
 }
 
-User::User(int userId, string& email, string& username, string& password, string& phone, Role& role) {
+User::User(int userId, string& email, string& username, string& password, string& phone) {
     this->userId = userId;
     this->email = email;
     this->username = username;
     this->password = password;
     this->phone = phone;
-    this->role = role;
+    // this->role = role;
 }
 
 void User::setUserId(int userId) {
@@ -58,12 +58,12 @@ string User::getPhone() {
     return this->phone;
 }
 
-void User::setRole(Role role) {
-    this->role = role;
-}
+// void User::setRole(Role role) {
+//     this->role = role;
+// }
 
-Role User::getRole() {
-    return this->role;
-}
+// Role User::getRole() {
+//     return this->role;
+// }
 
 
