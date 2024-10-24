@@ -1,8 +1,8 @@
 #include "UserRepository.h"
 
 UserRepository* UserRepository::_userRepository = nullptr;
-const char* UserRepository::_userFileName = "../../data/User.txt";
-const char* UserRepository::_userTempFileName = "../../data/TempUser.txt";
+const char* UserRepository::_userFileName = "database/User.txt";
+const char* UserRepository::_userTempFileName = "database/TempUser.txt";
 
 UserRepository::UserRepository() {
 }
@@ -21,7 +21,7 @@ void UserRepository::addUser(User user) {
     ofstream outFile;
     outFile.open(_userFileName, ios::app);
     if (!outFile.is_open()) {
-        cerr << "Không thể mở file để ghi." << endl;
+        cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
@@ -33,14 +33,14 @@ void UserRepository::addUser(User user) {
             << endl;
 
     outFile.close();
-    cout << "Thêm người dùng thành công!" << endl;
+    cout << "Register successful" << endl;
 }
 
 void UserRepository::updateUser(User updatedUser) {
     ifstream inFile(_userFileName);
     ofstream tempFile(_userTempFileName, ios::app);
     if (!inFile.is_open() || !tempFile.is_open()) {
-        cerr << "Không thể mở file để đọc hoặc ghi." << endl;
+        cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
@@ -70,10 +70,10 @@ void UserRepository::updateUser(User updatedUser) {
     if (found) {
         remove(_userFileName); 
         rename(_userTempFileName, _userFileName); 
-        cout << "Cập nhật người dùng thành công!" << endl;
+        cout << "Updated user successful" << endl;
     } else {
         remove(_userTempFileName); 
-        cout << "Người dùng không tồn tại!" << endl;
+        cout << "User not found" << endl;
     }
 }
 
@@ -81,7 +81,7 @@ void UserRepository::deleteUser(int userId){
     ifstream inFile(_userFileName);
     ofstream tempFile(_userTempFileName, ios::app);
     if (!inFile.is_open() || !tempFile.is_open()) {
-        cerr << "Không thể mở file để đọc hoặc ghi." << endl;
+        cerr <<  "Can't not open file to read and write" << endl;
         return;
     }
     bool found = false;
@@ -104,17 +104,17 @@ void UserRepository::deleteUser(int userId){
     if (found) {
         remove(_userFileName); 
         rename(_userTempFileName, _userFileName); 
-        cout << "Xóa người dùng thành công!" << endl;
+        cout << "Deleted user successful" << endl;
     } else {
         remove(_userTempFileName); 
-        cout << "Người dùng không tồn tại!" << endl;
+        cout << "User not found" << endl;
     }
 }
 
 User UserRepository::getUserById(int userId) {
     ifstream inFile(_userFileName);
     if (!inFile.is_open()) {
-        cerr << "Không thể mở file để đọc." <<  endl;
+        cerr << "Can't not open file to read and write" <<  endl;
         return User();
     }
     int id;
@@ -126,6 +126,6 @@ User UserRepository::getUserById(int userId) {
         }
     }
     inFile.close();
-    cout << "Không tìm thấy người dùng với ID này!" << endl;
+    cout << "UserId not found" << endl;
     return User();
 }

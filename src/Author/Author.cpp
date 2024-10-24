@@ -1,4 +1,4 @@
-#include "Author.h";
+#include "Author.h"
 
 Author::Author() {
     this->authorId = 0;

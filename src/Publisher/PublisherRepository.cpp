@@ -1,8 +1,8 @@
 #include "PublisherRepository.h"
 
 PublisherRepository* PublisherRepository::_publisherRepository = nullptr;
-const char* PublisherRepository::_publisherFileName = "../../data/Publisher.txt";
-const char* PublisherRepository::_publisherTempFileName = "../../data/TempPublisher.txt";
+const char* PublisherRepository::_publisherFileName = "database/Publisher.txt";
+const char* PublisherRepository::_publisherTempFileName = "database/TempPublisher.txt";
 
 PublisherRepository::PublisherRepository() {
 }
@@ -21,7 +21,7 @@ void PublisherRepository::addPublisher(Publisher publisher) {
     ofstream outFile;
     outFile.open(_publisherFileName, ios::app);
     if (!outFile.is_open()) {
-        cerr << "Không thể mở file để ghi." << endl;
+        cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
@@ -32,14 +32,14 @@ void PublisherRepository::addPublisher(Publisher publisher) {
             << endl;
 
     outFile.close();
-    cout << "Thêm nhà xuất bản thành công!" << endl;
+    cout << "Add publisher successful" << endl;
 }
 
 void PublisherRepository::updatePublisher(Publisher publisher) {
     ifstream inFile(_publisherFileName);
     ofstream tempFile(_publisherTempFileName, ios::app);
     if (!inFile.is_open() || !tempFile.is_open()) {
-        cerr << "Không thể mở file để đọc hoặc ghi." << endl;
+        cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
@@ -67,10 +67,10 @@ void PublisherRepository::updatePublisher(Publisher publisher) {
     if (found) {
         remove(_publisherFileName);
         rename(_publisherTempFileName, _publisherFileName);
-        cout << "Cập nhật nhà xuất bản thành công!" << endl;
+        cout << "Updated publisher successful" << endl;
     } else {
         remove(_publisherTempFileName);
-        cout << "Nhà xuất bản không tồn tại!" << endl;
+        cout << "Publisher not found" << endl;
     }
 }
 
@@ -78,7 +78,7 @@ void PublisherRepository::deletePublisher(int publisherId) {
     ifstream inFile(_publisherFileName);
     ofstream tempFile(_publisherTempFileName, ios::app);
     if (!inFile.is_open() || !tempFile.is_open()) {
-        cerr << "Không thể mở file để đọc hoặc ghi." << endl;
+        cerr << "Can't not open file to read and write" << endl;
         return;
     }
     bool found = false;
@@ -100,17 +100,17 @@ void PublisherRepository::deletePublisher(int publisherId) {
     if (found) {
         remove(_publisherFileName);
         rename(_publisherTempFileName, _publisherFileName);
-        cout << "Xóa nhà xuất bản thành công!" << endl;
+        cout << "Deleted publisher successful" << endl;
     } else {
         remove(_publisherTempFileName);
-        cout << "Nhà xuất bản không tồn tại!" << endl;
+        cout << "Publisher not found" << endl;
     }
 }
 
 Publisher PublisherRepository::getPublisherById(int publisherId) {
     ifstream inFile(_publisherFileName);
     if (!inFile.is_open()) {
-        cerr << "Không thể mở file để đọc." << endl;
+        cerr << "Can't not open file to read and write" << endl;
         return Publisher();
     }
     int PublisherId;
@@ -122,6 +122,6 @@ Publisher PublisherRepository::getPublisherById(int publisherId) {
         }
     }
     inFile.close();
-    cout << "Nhà xuất bản không tồn tại!" << endl;
+    cout << "PublisherId not found" << endl;
     return Publisher();
 }

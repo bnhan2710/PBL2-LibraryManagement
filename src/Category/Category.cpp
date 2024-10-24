@@ -1,4 +1,4 @@
-#include "Category.h";
+#include "Category.h"
 
 Category::Category() {
     this->categoryId = 0;

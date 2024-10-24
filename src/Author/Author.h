@@ -2,11 +2,14 @@
 #define AUTHOR_H
 #include <string>
 using namespace std;
+#ifndef DATE
+#define DATE
 struct Date {
     int day;
     int month;
     int year;
 };
+#endif
 class Author {
 private:
     int authorId;

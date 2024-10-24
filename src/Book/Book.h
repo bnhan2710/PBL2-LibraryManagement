@@ -1,15 +1,18 @@
 #ifndef BOOK_H
 #define BOOK_H
 #include <string>
-#include "Category.h"
-#include "Author.h"
-#include "Publisher.h"
+#include "../Category/Category.h"
+#include "../Author/Author.h"
+#include "../Publisher/Publisher.h"
 using namespace std;
+#ifndef DATE
+#define DATE
 struct Date {
     int day;
     int month;
     int year;
 };
+#endif
 class Book {
 private:
     int bookId;

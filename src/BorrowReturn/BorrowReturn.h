@@ -1,14 +1,17 @@
 #ifndef BORROWRETURN_H
 #define BORROWRETURN_H
 #include <string>
-#include "User.h"
-#include "Book.h"
+#include "../User/User.h"
+#include "../Book/Book.h"
 using namespace std;
+#ifndef DATE
+#define DATE
 struct Date {
     int day;
     int month;
     int year;
 };
+#endif
 class BorrowReturn {
 private:
     int borrowReturnId;

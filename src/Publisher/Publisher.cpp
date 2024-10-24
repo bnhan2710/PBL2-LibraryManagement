@@ -1,4 +1,4 @@
-#include "Publisher.h";
+#include "Publisher.h"
 
 Publisher::Publisher() {
     this->publisherId = 0;
