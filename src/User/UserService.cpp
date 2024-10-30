@@ -8,7 +8,7 @@ int userId;
 
 UserService::UserService() {
     this->_userRepository = UserRepository::initUserRepository();
-    // UserService::_userList = this->_userRepository->getAllUsers();
+    UserService::_userList = this->_userRepository->getAllUsers();
 }
 
 UserService* UserService::initUserService() {
@@ -109,4 +109,3 @@ User UserService::getUserById() {
     cin.ignore();
     return this->_userRepository->getUserById(userId);
 }
-

@@ -5,7 +5,7 @@ CXXFLAGS = -Wall -std=c++11
 SRC_DIR = src
 UTILS_DIR = utils
 
-SRC_FILES = $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/main.cpp)  $(wildcard $(UTILS_DIR)/List.cpp)
+SRC_FILES = $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/main.cpp)
 
 
 OUTPUT = program
