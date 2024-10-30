@@ -23,8 +23,7 @@ UserService::~UserService() {
 }
 
 void UserService::createUser() {
-    cout << "Enter user ID: ";
-    cin >> userId;
+    userId = _userList.GetLength() + 1;
     cin.ignore();
     cout << "Enter email: ";
     cin >> email;
@@ -39,6 +38,7 @@ void UserService::createUser() {
     cin >> phone;
     cin.ignore();
     User user(userId, email, username, password, phone);
+    this->_userList.InsertLast(user);
     this->_userRepository->addUser(user);
 }
 
@@ -99,6 +99,7 @@ void UserService::deleteUser(){
     cout << "Enter user ID: ";
     cin >> userId;
     cin.ignore();
+    this->_userList.Remove(userId);
     this->_userRepository->deleteUser(userId);
 }
 

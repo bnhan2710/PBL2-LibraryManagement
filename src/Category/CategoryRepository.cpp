@@ -117,3 +117,19 @@ Category CategoryRepository::getCategoryById(int categoryId) {
     return Category();
 }
 
+List<Category> CategoryRepository::getAllCategories() {
+    ifstream inFile(_categoryFileName);
+    List<Category> categories;
+    if (!inFile.is_open()) {
+        cerr << "Can't not open file to read and write" << endl;
+        return categories;
+    }
+    int CategoryId;
+    string CategoryName;
+    while (inFile >> CategoryId >> CategoryName) {
+        categories.InsertLast(Category(CategoryId, CategoryName));
+    }
+    inFile.close();
+    cout << "CategoryId not found" << endl;
+    return categories;
+}

@@ -6,6 +6,7 @@ int categoryId;
 
 CategoryService::CategoryService() {
     this->_categoriesRepository = CategoryRepository::initCategoryRepository();
+    this->_categoriesList = this->_categoriesRepository->getAllCategories();
 }
 
 CategoryService* CategoryService::initCategoryService() {
@@ -19,13 +20,13 @@ CategoryService::~CategoryService() {
 }
 
 void CategoryService::addCategory() {
-    cout << "Enter category ID: ";
-    cin >> categoryId;
+    categoryId = this->_categoriesList.GetLength() + 1;
     cin.ignore();
     cout << "Enter category name: ";
     cin >> categoryName;
     cin.ignore();
     Category category(categoryId, categoryName);
+    this->_categoriesList.InsertLast(category);
     this->_categoriesRepository->addCategory(category);
 }
 
@@ -64,6 +65,7 @@ void CategoryService::deleteCategory() {
     cout << "Enter category ID: ";
     cin >> categoryId;
     cin.ignore();
+    this->_categoriesList.Remove(categoryId);
     this->_categoriesRepository->deleteCategory(categoryId);
 }
 

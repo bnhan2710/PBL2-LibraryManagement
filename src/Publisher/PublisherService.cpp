@@ -6,6 +6,7 @@ int publisherId;
 
 PublisherService::PublisherService() {
     this->_publisherRepository = PublisherRepository::initPublisherRepository();
+    this->_publisherList = this->_publisherRepository->getAllPublishers();
 }
 
 PublisherService* PublisherService::initPublisherService() {
@@ -19,8 +20,7 @@ PublisherService::~PublisherService() {
 }
 
 void PublisherService::addPublisher() {
-    cout << "Enter publisher ID: ";
-    cin >> publisherId;
+    publisherId = this->_publisherList.GetLength() + 1;
     cin.ignore();
     cout << "Enter publisher name: ";
     cin >> publisherName;
@@ -32,6 +32,7 @@ void PublisherService::addPublisher() {
     cin >> contactInfo;
     cin.ignore();
     Publisher publisher(publisherId, publisherName, address, contactInfo);
+    this->_publisherList.InsertLast(publisher);
     this->_publisherRepository->addPublisher(publisher);
 }
 
@@ -83,6 +84,7 @@ void PublisherService::deletePublisher() {
     cout << "Enter publisher ID: ";
     cin >> publisherId;
     cin.ignore();
+    this->_publisherList.Remove(publisherId);
     this->_publisherRepository->deletePublisher(publisherId);
 }
 

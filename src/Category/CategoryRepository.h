@@ -3,6 +3,7 @@
 #include "Category.h"
 #include <iostream>
 #include <fstream>
+#include "../../utils/List.h"
 using namespace std;
 class CategoryRepository {
 private:
@@ -18,5 +19,6 @@ public:
     void updateCategory(Category category);
     void deleteCategory(int categoryId);
     Category getCategoryById(int categoryId);
+    List<Category> getAllCategories();
 };
 #endif

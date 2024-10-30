@@ -140,7 +140,7 @@ List<User> UserRepository::getAllUsers() {
     int id;
     string email, username, password, phone;
     while (inFile >> id >> email >> username >> password >> phone) {
-        cout << id << " " << email << " " << username << " " << password << " " << phone << endl;
+        userList.InsertLast(User(id, email, username, password, phone));
     }
     inFile.close();
     return userList;

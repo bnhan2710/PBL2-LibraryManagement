@@ -3,6 +3,7 @@
 #include "Publisher.h"
 #include <iostream>
 #include <fstream>
+#include "../../utils/List.h"
 using namespace std;
 class PublisherRepository {
 private:
@@ -17,5 +18,7 @@ public:
     void updatePublisher(Publisher publisher);
     void deletePublisher(int publisherId);
     Publisher getPublisherById(int publisherId);
+    List<Publisher> getAllPublishers();
+    
 };                  
 #endif

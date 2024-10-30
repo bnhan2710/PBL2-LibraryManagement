@@ -125,3 +125,19 @@ Publisher PublisherRepository::getPublisherById(int publisherId) {
     cout << "PublisherId not found" << endl;
     return Publisher();
 }
+
+List<Publisher> PublisherRepository::getAllPublishers() {
+    ifstream inFile(_publisherFileName);
+    List<Publisher> publishers;
+    if (!inFile.is_open()) {
+        cerr << "Can't not open file to read and write" << endl;
+        return publishers;
+    }
+    int PublisherId;
+    string PublisherName, Address, ContactInfo;
+    while (inFile >> PublisherId >> PublisherName >> Address >> ContactInfo) {
+        publishers.InsertLast(Publisher(PublisherId, PublisherName, Address, ContactInfo));
+    }
+    inFile.close();
+    return publishers;
+}

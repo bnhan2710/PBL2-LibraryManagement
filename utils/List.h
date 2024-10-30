@@ -14,6 +14,7 @@ public:
     ~List();
     void Erase();
     T& operator[](int);
+    List<T>& operator=(const List<T>&);
     int GetLength() const;
     void Reallocate(int);
     void Resize(int);
@@ -49,6 +50,19 @@ template<typename T>
 T& List<T>::operator[](int index)
 {
     return this->data[index];
+}
+template<typename T>
+List<T>& List<T>::operator=(const List<T>& other)
+{
+    if (this != &other)
+    {
+        delete[] this->data;
+        this->length = other.length;
+        this->data = new T[this->length];
+        for (int i = 0; i < this->length; ++i)
+            this->data[i] = other.data[i];
+    }
+    return *this;
 }
 template<typename T>
 int List<T>::GetLength() const
