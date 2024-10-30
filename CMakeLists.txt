@@ -4,6 +4,8 @@ project(Library Management)
 
 add_executable(library_management src/main.cpp)
 
+add_subdirectory(raylib/)
+
 target_include_directories(
     library_management 
     PRIVATE
