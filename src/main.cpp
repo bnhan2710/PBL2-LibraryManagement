@@ -48,9 +48,29 @@ void handleCategoryMenu(UI& ui, CategoryService* categoryService) {
         cout << "Enter your choice: ";
         cin >> categoryChoice;
         // Handle category 
-        if (categoryChoice != 5) {
-            cout << "Selected Category option " << categoryChoice << "\n";
-        }
+        switch( categoryChoice ) {
+            case 1:
+                cout << "create new Category\n";
+                categoryService->addCategory();
+                break;
+            case 2:
+                cout << "Updating Category\n";
+                categoryService->updateCategory();
+                break;
+            case 3:
+                cout << "Deleting Category\n";
+                categoryService->deleteCategory();
+                break;
+            case 4:
+                cout << "Getting Category by ID\n";
+                categoryService->getCategoryById();
+                break;
+            case 5:
+                cout << "Exiting user menu\n";
+                break;
+            default:
+                cout << "Invalid choice, please try again.\n";
+        }        
     } while (categoryChoice != 5);
 }
 
@@ -61,8 +81,28 @@ void handlePublisherMenu(UI& ui, PublisherService* publisherService) {
         cout << "Enter your choice: ";
         cin >> publisherChoice;
         // Handle publisher 
-        if (publisherChoice != 5) {
-            cout << "Selected Publisher option " << publisherChoice << "\n";
+        switch( publisherChoice ) {
+            case 1:
+                cout << "create new Publisher\n";
+                publisherService->addPublisher();
+                break;
+            case 2:
+                cout << "Updating Publisher\n";
+                publisherService->updatePublisher();
+                break;
+            case 3:
+                cout << "Deleting Publisher\n";
+                publisherService->deletePublisher();
+                break;
+            case 4:
+                cout << "Getting Publisher by ID\n";
+                publisherService->getPublisherById();
+                break;
+            case 5:
+                cout << "Exiting user menu\n";
+                break;
+            default:
+                cout << "Invalid choice, please try again.\n";
         }
     } while (publisherChoice != 5);
 }

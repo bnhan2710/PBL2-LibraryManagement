@@ -10,9 +10,9 @@ private:
 public:
     ~PublisherService();
     static PublisherService* initPublisherService();
-    void addPublisher(Publisher publisher);
-    void updatePublisher(Publisher publisher);
-    void deletePublisher(int publisherId);
-    Publisher getPublisherById(int publisherId);
+    void addPublisher();
+    void updatePublisher();
+    void deletePublisher();
+    Publisher getPublisherById();
 };
 #endif

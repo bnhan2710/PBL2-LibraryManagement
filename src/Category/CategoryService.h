@@ -10,9 +10,9 @@ private:
 public:
     static CategoryService* initCategoryService();
     ~CategoryService();
-    void addCategory(Category category);
-    void updateCategory(Category category);
-    void deleteCategory(int categoryId);
-    Category getCategoryById(int categoryId);
+    void addCategory();
+    void updateCategory();
+    void deleteCategory();
+    Category getCategoryById();
 };
 #endif
