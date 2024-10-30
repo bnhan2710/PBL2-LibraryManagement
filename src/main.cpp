@@ -5,86 +5,93 @@
 #include "./Category/CategoryService.h"
 #include "./Publisher/Publisher.h"
 #include "./Publisher/PublisherService.h"
-// #include "./utils/password.h"
+#include "./UI_Console/ui.cpp"
 using namespace std;
-int main(){
+
+void handleUserMenu(UI& ui) {
+    int userChoice;
+    do {
+        ui.UserMenu();
+        cout << "Enter your choice: ";
+        cin >> userChoice;
+        // Handle user 
+        if (userChoice != 5) {
+            cout << "Selected User option " << userChoice << "\n";
+        }
+    } while (userChoice != 5);
+}
+
+void handleCategoryMenu(UI& ui) {
+    int categoryChoice;
+    do {
+        ui.CategoryMenu();
+        cout << "Enter your choice: ";
+        cin >> categoryChoice;
+        // Handle category 
+        if (categoryChoice != 5) {
+            cout << "Selected Category option " << categoryChoice << "\n";
+        }
+    } while (categoryChoice != 5);
+}
+
+void handlePublisherMenu(UI& ui) {
+    int publisherChoice;
+    do {
+        ui.PublisherMenu();
+        cout << "Enter your choice: ";
+        cin >> publisherChoice;
+        // Handle publisher 
+        if (publisherChoice != 5) {
+            cout << "Selected Publisher option " << publisherChoice << "\n";
+        }
+    } while (publisherChoice != 5);
+}
+
+void handleBookMenu(UI& ui) {
+    int bookChoice;
+    do {
+        ui.BookMenu();
+        cout << "Enter your choice: ";
+        cin >> bookChoice;
+        // Handle book 
+        if (bookChoice != 5) {
+            cout << "Selected Book option " << bookChoice << "\n";
+        }
+    } while (bookChoice != 5);
+}
+
+int main() {
+    UI ui;
     UserService* userService = UserService::initUserService();
     CategoryService* categoryService = CategoryService::initCategoryService();
     PublisherService* publisherService = PublisherService::initPublisherService();
-    int id;
-    string email, username, password, phone;
-    int CategoryId;
-    string CategoryName;
-    int PublisherId;
-    string PublisherName, Address, ContactInfo;
+    int choice;
 
-    // cout << "NID ";
-    // cin >> id;
-    // cin.ignore();  
+    do {
+        ui.MainMenu();
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-    // cout << "email: ";
-    // getline(cin, email);
+        switch (choice) {
+            case 1:
+                handleUserMenu(ui);
+                break;
+            case 2:
+                handleCategoryMenu(ui);
+                break;
+            case 3:
+                handlePublisherMenu(ui);
+                break;
+            case 4:
+                handleBookMenu(ui);
+                break;
+            case 5:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice, please try again.\n";
+        }
+    } while (choice != 5);
 
-    // cout << "username ";
-    // getline(cin, username);
-
-    // cout << "pass ";
-    // getline(cin, password);
-    // // string hashedPassword = PasswordUtil::hashPassword(password);
-    // cout << "sdt ";
-    // getline(cin, phone);
-
-
-    // User registerUser(id, email, username, password, phone);
-
-    // userService->registerAccount(registerUser);
-
-    // cout << "Nhap sdt: ";
-    // getline(cin, phone);
-    
-    // User UpdateUser(id, email, username, password, phone);
-    // userService->updateUser(UpdateUser);
-
-    // cout << "Nhap CategoryId : ";
-    // cin >> CategoryId;
-    // cin.ignore();
-
-    // cout << "Nhap CategoryName: ";
-    // getline(cin, CategoryName);
-
-    // Category newCategory( CategoryId, CategoryName );
-    // categoryService->addCategory( newCategory );
-
-    // cout << "Nhap CategoryName: ";
-    // getline(cin, CategoryName);
-
-    // Category updateCategory( CategoryId, CategoryName );
-    // categoryService->updateCategory( updateCategory );
-
-    // categoryService->deleteCategory( CategoryId );
-
-    // cout << "Nhap PublisherId : ";
-    // cin >> PublisherId;
-    // cin.ignore();
-
-    // cout << "Nhap PublisherName: ";
-    // getline(cin, PublisherName);
-
-    // cout << "Nhap Address: ";
-    // getline(cin, Address);
-
-    // cout << "Nhap ContactInfo: ";
-    // getline(cin, ContactInfo);
-
-    // Publisher newPublisher( PublisherId, PublisherName, Address, ContactInfo );
-
-    // publisherService->addPublisher( newPublisher );
-
-    // cout << "Nhap PublisherName: ";
-    // getline(cin, PublisherName);
-
-    // Publisher updatePublisher( PublisherId, PublisherName, Address, ContactInfo );
-    // publisherService->updatePublisher( updatePublisher );
-
-    // publisherService->deletePublisher( PublisherId );
+    return 0;
 }
