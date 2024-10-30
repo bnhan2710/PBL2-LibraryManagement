@@ -129,3 +129,19 @@ User UserRepository::getUserById(int userId) {
     cout << "UserId not found" << endl;
     return User();
 }
+
+List<User> UserRepository::getAllUsers() {
+    ifstream inFile(_userFileName);
+    List<User> userList;
+    if (!inFile.is_open()) {
+        cerr << "Can't not open file to read and write" << endl;
+        return userList;
+    }
+    int id;
+    string email, username, password, phone;
+    while (inFile >> id >> email >> username >> password >> phone) {
+        cout << id << " " << email << " " << username << " " << password << " " << phone << endl;
+    }
+    inFile.close();
+    return userList;
+}

@@ -3,6 +3,7 @@
 #include "User.h"
 #include <iostream>
 #include <fstream>
+#include "../../utils/List.h"
 using namespace std;
 class UserRepository {
 private:
@@ -17,5 +18,6 @@ public:
     void updateUser(User user);
     void deleteUser(int userId);
     User getUserById(int userId);
+    List<User> getAllUsers();
 };               
 #endif

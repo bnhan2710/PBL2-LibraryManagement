@@ -22,4 +22,3 @@ public:
     void InsertFirst(T);
     void InsertLast(T);
 };
-

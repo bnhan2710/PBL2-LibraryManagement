@@ -8,20 +8,40 @@
 #include "./UI_Console/ui.cpp"
 using namespace std;
 
-void handleUserMenu(UI& ui) {
+void handleUserMenu(UI& ui, UserService* userService) {
     int userChoice;
     do {
         ui.UserMenu();
         cout << "Enter your choice: ";
         cin >> userChoice;
         // Handle user 
-        if (userChoice != 5) {
-            cout << "Selected User option " << userChoice << "\n";
+        switch( userChoice ) {
+            case 1:
+                cout << "Create new user\n";
+                userService->createUser();
+                break;
+            case 2:
+                cout << "Updating user\n";
+                userService->updateUser();
+                break;
+            case 3:
+                cout << "Deleting user\n";
+                userService->deleteUser();
+                break;
+            case 4:
+                cout << "Getting user by ID\n";
+                userService->getUserById();
+                break;
+            case 5:
+                cout << "Exiting user menu\n";
+                break;
+            default:
+                cout << "Invalid choice, please try again.\n";
         }
     } while (userChoice != 5);
 }
 
-void handleCategoryMenu(UI& ui) {
+void handleCategoryMenu(UI& ui, CategoryService* categoryService) {
     int categoryChoice;
     do {
         ui.CategoryMenu();
@@ -34,7 +54,7 @@ void handleCategoryMenu(UI& ui) {
     } while (categoryChoice != 5);
 }
 
-void handlePublisherMenu(UI& ui) {
+void handlePublisherMenu(UI& ui, PublisherService* publisherService) {
     int publisherChoice;
     do {
         ui.PublisherMenu();
@@ -60,6 +80,19 @@ void handleBookMenu(UI& ui) {
     } while (bookChoice != 5);
 }
 
+void handleAuthorMenu(UI& ui) {
+    int authorChoice;
+    do {
+        ui.AuthorMenu();
+        cout << "Enter your choice: ";
+        cin >> authorChoice;
+        // Handle author 
+        if (authorChoice != 5) {
+            cout << "Selected Author option " << authorChoice << "\n";
+        }
+    } while (authorChoice != 5);
+}
+
 int main() {
     UI ui;
     UserService* userService = UserService::initUserService();
@@ -74,18 +107,21 @@ int main() {
 
         switch (choice) {
             case 1:
-                handleUserMenu(ui);
+                handleUserMenu(ui, userService);
                 break;
             case 2:
-                handleCategoryMenu(ui);
+                handleCategoryMenu(ui, categoryService);
                 break;
             case 3:
-                handlePublisherMenu(ui);
+                handlePublisherMenu(ui, publisherService);
                 break;
             case 4:
                 handleBookMenu(ui);
                 break;
-            case 5:
+            case 5: 
+                handleAuthorMenu(ui);
+                break;
+            case 6:
                 cout << "Exiting...\n";
                 break;
             default:
