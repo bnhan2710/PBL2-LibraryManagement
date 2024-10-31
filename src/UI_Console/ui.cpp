@@ -18,7 +18,8 @@ class UI {
         cout << "  2. Category\n";
         cout << "  3. Publisher\n";
         cout << "  4. Book\n";
-        cout << "  5. Exit\n";
+        cout << "  5. Author\n";
+        cout << "  6. Exit\n";
         Separator();
         cout << endl;
     }

@@ -29,8 +29,8 @@ void handleUserMenu(UI& ui, UserService* userService) {
                 userService->deleteUser();
                 break;
             case 4:
-                cout << "Getting user by ID\n";
-                userService->getUserById();
+                cout << "Getting user\n";
+                userService->getUser();
                 break;
             case 5:
                 cout << "Exiting user menu\n";
@@ -62,8 +62,8 @@ void handleCategoryMenu(UI& ui, CategoryService* categoryService) {
                 categoryService->deleteCategory();
                 break;
             case 4:
-                cout << "Getting Category by ID\n";
-                categoryService->getCategoryById();
+                cout << "Getting Category\n";
+                categoryService->getCategory();
                 break;
             case 5:
                 cout << "Exiting user menu\n";
@@ -95,8 +95,8 @@ void handlePublisherMenu(UI& ui, PublisherService* publisherService) {
                 publisherService->deletePublisher();
                 break;
             case 4:
-                cout << "Getting Publisher by ID\n";
-                publisherService->getPublisherById();
+                cout << "Getting Publisher\n";
+                publisherService->getPublisher();
                 break;
             case 5:
                 cout << "Exiting user menu\n";

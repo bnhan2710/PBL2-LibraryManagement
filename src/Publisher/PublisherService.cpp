@@ -37,7 +37,10 @@ void PublisherService::addPublisher() {
 }
 
 void PublisherService::updatePublisher() {
-    Publisher isExistedPublisher = getPublisherById();
+    cout << "Enter publisher ID: ";
+    cin >> publisherId;
+    cin.ignore();
+    Publisher isExistedPublisher = this->_publisherRepository->getPublisherById( publisherId );
     if (isExistedPublisher.getPublisherId() == 0) {
         return;
     }
@@ -84,14 +87,24 @@ void PublisherService::deletePublisher() {
     cout << "Enter publisher ID: ";
     cin >> publisherId;
     cin.ignore();
-    this->_publisherList.Remove(publisherId);
-    this->_publisherRepository->deletePublisher(publisherId);
+    Publisher isExistedPublisher = this->_publisherRepository->getPublisherById(publisherId);
+    if (isExistedPublisher.getPublisherId() == 0) {
+        return;
+    }
+    isExistedPublisher.setPublisherName("999");
+    isExistedPublisher.setAddress("999");
+    isExistedPublisher.setContactInfo("999");
+    this->_publisherRepository->updatePublisher(isExistedPublisher);
 }
 
-Publisher PublisherService::getPublisherById() {
-    cout << "Enter publisher ID: ";
-    cin >> publisherId;
-    cin.ignore();
-    return this->_publisherRepository->getPublisherById(publisherId);
+List<Publisher> PublisherService::getPublisher( int publisherId ) {
+    List<Publisher> publishers;
+    Publisher publisher = this->_publisherRepository->getPublisherById(publisherId);
+    publishers.InsertLast(publisher);
+    return publishers;
+}
+
+List<Publisher> PublisherService::getPublisher() {
+    return this->_publisherRepository->getAllPublishers();
 }
 

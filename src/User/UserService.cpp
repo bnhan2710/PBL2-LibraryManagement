@@ -44,7 +44,10 @@ void UserService::createUser() {
 
 
 void UserService::updateUser() {
-    User isExistedUser = UserService::getUserById();
+    cout << "Enter user ID: ";
+    cin >> userId;
+    cin.ignore();
+    User isExistedUser = this->_userRepository->getUserById(userId); 
     if (isExistedUser.getUserId() == 0) {
         return;
     }
@@ -99,14 +102,25 @@ void UserService::deleteUser(){
     cout << "Enter user ID: ";
     cin >> userId;
     cin.ignore();
-    this->_userList.Remove(userId);
-    this->_userRepository->deleteUser(userId);
+    User isExistedUser = this->_userRepository->getUserById(userId);
+    if (isExistedUser.getUserId() == 0) {
+        return;
+    }
+    isExistedUser.setEmail("999");
+    isExistedUser.setUsername("999");
+    isExistedUser.setPassword("999");
+    isExistedUser.setPhone("999");
+    this->_userRepository->updateUser(isExistedUser);
 }
 
 
-User UserService::getUserById() {
-    cout << "Enter user ID: ";
-    cin >> userId;
-    cin.ignore();
-    return this->_userRepository->getUserById(userId);
+List<User> UserService::getUser( int userId ) {
+    List<User> userList;
+    User user = this->_userRepository->getUserById(userId);
+    userList.InsertLast(user);
+    return userList;
+}
+
+List<User> UserService::getUser() {
+    return this->_userRepository->getAllUsers();
 }

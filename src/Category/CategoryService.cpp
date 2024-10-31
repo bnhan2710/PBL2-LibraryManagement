@@ -31,7 +31,10 @@ void CategoryService::addCategory() {
 }
 
 void CategoryService::updateCategory() {
-    Category isExistedCategory = getCategoryById();
+    cout << "Enter category ID: ";
+    cin >> categoryId;
+    cin.ignore();
+    Category isExistedCategory = this->_categoriesRepository->getCategoryById(categoryId);
     if (isExistedCategory.getCategoryId() == 0) {
         return;
     }
@@ -65,13 +68,21 @@ void CategoryService::deleteCategory() {
     cout << "Enter category ID: ";
     cin >> categoryId;
     cin.ignore();
-    this->_categoriesList.Remove(categoryId);
-    this->_categoriesRepository->deleteCategory(categoryId);
+    Category isExistedCategory = this->_categoriesRepository->getCategoryById(categoryId);
+    if (isExistedCategory.getCategoryId() == 0) {
+        return;
+    }
+    isExistedCategory.setCategoryName("Deleted");
+    this->_categoriesRepository->updateCategory(isExistedCategory);
 }
 
-Category CategoryService::getCategoryById() {
-    cout << "Enter category ID: ";
-    cin >> categoryId;
-    cin.ignore();
-    return this->_categoriesRepository->getCategoryById(categoryId);
+List<Category> CategoryService::getCategory( int categoryId ) {
+    List<Category> categories;
+    Category category = this->_categoriesRepository->getCategoryById(categoryId);
+    categories.InsertLast(category);
+    return categories;
+}
+
+List<Category> CategoryService::getCategory() {
+    return this->_categoriesRepository->getAllCategories();
 }

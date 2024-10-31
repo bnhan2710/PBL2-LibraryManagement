@@ -15,6 +15,7 @@ public:
     void addCategory();
     void updateCategory();
     void deleteCategory();
-    Category getCategoryById();
+    List<Category> getCategory( int );
+    List<Category> getCategory();
 };
 #endif

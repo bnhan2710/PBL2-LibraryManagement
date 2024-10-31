@@ -15,6 +15,8 @@ public:
     void addPublisher();
     void updatePublisher();
     void deletePublisher();
-    Publisher getPublisherById();
+    List<Publisher> getPublisher( int );
+    List<Publisher> getPublisher();
+
 };
 #endif

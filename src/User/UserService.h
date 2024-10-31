@@ -15,6 +15,7 @@ class UserService {
     void createUser();
     void updateUser();
     void deleteUser();
-    User getUserById();
+    List<User> getUser( int );
+    List<User> getUser();
 };
 #endif
