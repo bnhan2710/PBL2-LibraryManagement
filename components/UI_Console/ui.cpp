@@ -88,4 +88,15 @@ class UI {
         Separator();
         cout << endl;
     }
+
+    void LoginMenu() {
+        Separator();
+        cout << "             LOGIN MENU              \n";
+        Separator();
+        cout << "  1. Login\n";
+        cout << "  2. Register\n";
+        cout << "  3. Exit\n";
+        Separator();
+        cout << endl;
+    }
 };

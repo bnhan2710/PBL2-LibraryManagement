@@ -5,8 +5,24 @@
 #include "./Category/CategoryService.h"
 #include "./Publisher/Publisher.h"
 #include "./Publisher/PublisherService.h"
+#include "../src/auth/auth.h"
 #include "./UI_Console/ui.cpp"
 using namespace std;
+
+bool handleLogin(UI& ui, Auth* auth) {
+    string username, password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+    if (auth->login(username, password)) {
+        cout << "Login successful\n";
+        return true;
+    } else {
+        cout << "Login failed\n";
+        return false;
+    }
+}
 
 void handleUserMenu(UI& ui, UserService* userService) {
     int userChoice;
@@ -138,8 +154,11 @@ int main() {
     UserService* userService = UserService::initUserService();
     CategoryService* categoryService = CategoryService::initCategoryService();
     PublisherService* publisherService = PublisherService::initPublisherService();
+    Auth* auth = new Auth();
+    if(!handleLogin(ui, auth)) {
+        return 0;
+    }
     int choice;
-
     do {
         ui.MainMenu();
         cout << "Enter your choice: ";

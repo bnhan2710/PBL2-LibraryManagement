@@ -9,9 +9,9 @@ class UserService {
         UserRepository* _userRepository;
         List<User> _userList;
         UserService();
+        ~UserService();
     public:
     static UserService* initUserService();
-    ~UserService();
     void createUser();
     void updateUser();
     void deleteUser();

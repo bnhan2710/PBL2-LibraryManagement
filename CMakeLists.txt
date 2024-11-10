@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Library_Management)
 
-add_executable(library_Management src/main.cpp)
+add_executable(library_Management components/main.cpp)
 
 add_subdirectory(raylib/)
 
