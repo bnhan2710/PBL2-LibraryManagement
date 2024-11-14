@@ -3,37 +3,31 @@
 #include <string>
 #include "../User/User.h"
 #include "../Book/Book.h"
+#include "../../utils/date/date.h"
 using namespace std;
-#ifndef DATE
-#define DATE
-struct Date {
-    int day;
-    int month;
-    int year;
+enum Status {
+    BORROWED,
+    RETURNED
 };
-#endif
 class BorrowReturn {
 private:
-    int borrowReturnId;
-    User user;
-    Book book;
-    Date borrowDate;
-    Date returnDate;
-    string status;
+    int id;
+    int userId;
+    int bookId;
+    Date borrowAt;
+    int num_of_days;
+    Status status;
 public:
     BorrowReturn();
-    BorrowReturn(int borrowReturnId, User& user, Book& book, Date& borrowDate, Date& returnDate, string& status);
-    void setBorrowReturnId(int borrowReturnId);
-    int getBorrowReturnId();
-    void setUser(User user);
-    User getUser();
-    void setBook(Book book);
-    Book getBook();
-    void setBorrowDate(Date borrowDate);
-    Date getBorrowDate();
-    void setReturnDate(Date returnDate);
-    Date getReturnDate();
-    void setStatus(string status);
-    string getStatus();
-};
+    BorrowReturn(int id, int userId, int bookId, Date borrowAt, int num_of_days, Status status);
+    ~BorrowReturn();
+    Date getBorrowAt();
+    Date getReturnAt();
+    int getQuantity();
+    int getNumOfDays();
+    int getId();
+    Status getStatus();
+    void setStatus(Status status);
+    void setNumOfDays(int num_of_days); 
+};  
 #endif
