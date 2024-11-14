@@ -5,39 +5,50 @@
 #include "../Author/Author.h"
 #include "../Publisher/Publisher.h"
 using namespace std;
-#ifndef DATE
-#define DATE
-struct Date {
-    int day;
-    int month;
-    int year;
-};
-#endif
 class Book {
 private:
     int bookId;
     string title;
     Author author;
-    Publisher publisher;
-    Category category;
     int quantity;
-    Date publishedDate;
+    int num_of_pages;
+    int publisherId;
+    int categoryId;
+    Category category;
+    Publisher publisher;
+    Author author;
 public:
     Book();
-    Book( int bookId, string& title, Author& author, Publisher& publisher, Category& category, int& quantity, Date& publishedDate );
-    void setBookId( int bookId );
-    int getBookId();
-    void setTitle( string title );
+    Book(int bookId, string title, Author author, int quantity, int num_of_pages, int publisherId, int categoryId);
+    ~Book();
+
+    void setBookId(int bookId);
+    
+    void setTitle(string title);
     string getTitle();
-    void setAuthor( Author author );
+    
+    void setAuthor(Author author);
     Author getAuthor();
-    void setPublisher( Publisher publisher );
-    Publisher getPublisher();
-    void setCategory( Category category );
-    Category getCategory();
-    void setPublishedDate( Date publishedDate );
-    Date getPublishedDate();
-    void setQuantity( int quantity );
+    
+    void setQuantity(int quantity);
     int getQuantity();
+    
+    void setNumOfPages(int num_of_pages);
+    int getNumOfPages();
+    
+    void setPublisherId(int publisherId);
+    int getPublisherId();
+    
+    void setCategoryId(int categoryId);
+    int getCategoryId();
+
+    void setCategory(Category category);
+    Category getCategory();
+
+    void setPublisher(Publisher publisher);
+    Publisher getPublisher();
+
+    void setAuthor(Author author);
+    Author getAuthor();
 };
 #endif

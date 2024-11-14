@@ -1,78 +1,97 @@
 #include "Book.h"
+#include <iostream>
+#include <string>
 
-Book::Book() {
-    this->bookId = 0;
-    this->title = "";
-    this->author = Author();
-    this->publisher = Publisher();
-    this->category = Category();
-    this->quantity = 0;
-    this->publishedDate = Date();
+Book::Book(){
 }
 
-Book::Book(int bookId, string& title, Author& author, Publisher& publisher, Category& category, int& quantity, Date& publishedDate) {
+Book::Book(int bookId, string title, Author author, int quantity, int num_of_pages, int publisherId, int categoryId){
     this->bookId = bookId;
     this->title = title;
     this->author = author;
-    this->publisher = publisher;
-    this->category = category;
     this->quantity = quantity;
-    this->publishedDate = publishedDate;
+    this->num_of_pages = num_of_pages;
+    this->publisherId = publisherId;
+    this->categoryId = categoryId;
 }
 
-void Book::setBookId(int bookId) {
+Book::~Book(){
+
+}
+
+void Book::setBookId(int bookId){
     this->bookId = bookId;
 }
 
-int Book::getBookId() {
-    return this->bookId;
-}
-
-void Book::setTitle(string title) {
+void Book::setTitle(string title){
     this->title = title;
 }
 
-string Book::getTitle() {
+string Book::getTitle(){
     return this->title;
 }
 
-void Book::setAuthor(Author author) {
+void Book::setAuthor(Author author){
     this->author = author;
 }
 
-Author Book::getAuthor() {
+Author Book::getAuthor(){
     return this->author;
 }
 
-void Book::setPublisher(Publisher publisher) {
-    this->publisher = publisher;
-}
-
-Publisher Book::getPublisher() {
-    return this->publisher;
-}
-
-void Book::setCategory(Category category) {
-    this->category = category;
-}
-
-Category Book::getCategory() {
-    return this->category;
-}
-
-void Book::setPublishedDate(Date publishedDate) {
-    this->publishedDate = publishedDate;
-}
-
-Date Book::getPublishedDate() {
-    return this->publishedDate;
-}
-
-void Book::setQuantity(int quantity) {
+void Book::setQuantity(int quantity){
     this->quantity = quantity;
 }
 
-int Book::getQuantity() {
+int Book::getQuantity(){
     return this->quantity;
+}
+
+void Book::setNumOfPages(int num_of_pages){
+    this->num_of_pages = num_of_pages;
+}
+
+int Book::getNumOfPages(){
+    return this->num_of_pages;
+}
+
+void Book::setPublisherId(int publisherId){
+    this->publisherId = publisherId;
+}
+
+int Book::getPublisherId(){
+    return this->publisherId;
+}
+
+void Book::setCategoryId(int categoryId){
+    this->categoryId = categoryId;
+}
+
+int Book::getCategoryId(){
+    return this->categoryId;
+}
+
+void Book::setCategory(Category category){
+    this->category = category;
+}
+
+Category Book::getCategory(){
+    return this->category;
+}
+
+void Book::setPublisher(Publisher publisher){
+    this->publisher = publisher;
+}
+
+Publisher Book::getPublisher(){
+    return this->publisher;
+}
+
+void Book::setAuthor(Author author){
+    this->author = author;
+}
+
+Author Book::getAuthor(){
+    return this->author;
 }
 
