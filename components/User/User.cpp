@@ -1,69 +1,73 @@
 #include "User.h"
-
+#include "../Role/Role.h"
 User::User() {
     this->userId = 0;
     this->email = "";
     this->username = "";
     this->password = "";
     this->phone = "";
-    // this->role = Role();
+    this->role = nullptr;
 }
 
-User::User(int userId, string& email, string& username, string& password, string& phone) {
+User::User(int userId, const string& email, const string& username, const string& password, const string& phone, Role* role) {
     this->userId = userId;
     this->email = email;
     this->username = username;
     this->password = password;
     this->phone = phone;
-    // this->role = role;
+    this->role = role;
+}
+
+User::~User() {
+    delete this->role;
 }
 
 void User::setUserId(int userId) {
     this->userId = userId;
 }
 
-int User::getUserId() {
+int User::getUserId() const {
     return this->userId;
 }
 
-void User::setEmail(string email) {
+void User::setEmail(const string& email) {
     this->email = email;
 }
 
-string User::getEmail() {
+string User::getEmail() const {
     return this->email;
 }
 
-void User::setUsername(string username) {
+void User::setUsername(const string& username) {
     this->username = username;
 }
 
-string User::getUsername() {
+string User::getUsername() const {
     return this->username;
 }
 
-void User::setPassword(string password) {
+void User::setPassword(const string& password) {
     this->password = password;
 }
 
-string User::getPassword() {
+string User::getPassword() const {
     return this->password;
 }
 
-void User::setPhone(string phone) {
+void User::setPhone(const string& phone) {
     this->phone = phone;
 }
 
-string User::getPhone() {
+string User::getPhone() const {
     return this->phone;
 }
 
-// void User::setRole(Role role) {
-//     this->role = role;
-// }
+void User::setRole(Role* role) {
+    this->role = role;
+}
 
-// Role User::getRole() {
-//     return this->role;
-// }
+Role* User::getRole() const {
+    return this->role;
+}
 
 

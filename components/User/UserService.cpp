@@ -1,67 +1,88 @@
 #include <iostream>
-#include <fstream>  
 #include "UserService.h"
+#include "../Role/Member.h"
+#include "../Role/Admin.h"
+#include "../Role/Librarian.h"
+
 using namespace std;
-UserService* UserService::_userService = 0;
-string email, username, password, phone;
-int userId;
+
+UserService* UserService::_userService = nullptr;
 
 UserService::UserService() {
     this->_userRepository = UserRepository::initUserRepository();
-    UserService::_userList = this->_userRepository->getAllUsers();
+    this->_userList = this->_userRepository->getAllUsers();
+}
+
+UserService::~UserService() {
+    delete _userRepository;
 }
 
 UserService* UserService::initUserService() {
-    if (_userService == 0) {
+    if (_userService == nullptr) {
         _userService = new UserService();
     }
     return _userService;
 }
 
-UserService::~UserService() {
-    delete _userService;
+
+void UserService::createUser(const string& username, const string& email, const string& phone, const string& password, Role* role) {
+    int userId = _userList.GetLength() + 1;  
+    Role* assignedRole = (role != nullptr) ? role : new Member();  
+
+    User user(userId, email, username, password, phone, assignedRole);
+
+    this->_userList.InsertLast(user);      
+    this->_userRepository->addUser(user); 
+    cout << "User created successfully! Username: " << username << endl;
 }
 
-void UserService::createUser(string email, string username, string password, string phone) {
-    userId = _userList.GetLength() + 1;
-    User user(userId, email, username, password, phone);
-    this->_userList.InsertLast(user);
-    this->_userRepository->addUser(user);
-}
-
-
-void UserService::updateUser(int userId, string username, string email, string phone, string password) {
-    User isExistedUser = this->_userRepository->getUserById(userId); 
+void UserService::updateUser(int userId, const string& username, const string& email, const string& phone, const string& password, Role* role) {
+    User isExistedUser = this->_userRepository->getUserById(userId);
     if (isExistedUser.getUserId() == 0) {
+        cout << "User not found!" << endl;
         return;
     }
+
     isExistedUser.setEmail(email);
     isExistedUser.setUsername(username);
     isExistedUser.setPassword(password);
     isExistedUser.setPhone(phone);
+
+    if (role != nullptr) {
+        isExistedUser.setRole(role);
+    }
+
     this->_userRepository->updateUser(isExistedUser);
+    cout << "User updated successfully! User ID: " << userId << endl;
 }
 
-void UserService::deleteUser(){
-    cout << "Enter user ID: ";
-    cin >> userId;
-    cin.ignore();
+void UserService::deleteUser(int userId) {
+
     User isExistedUser = this->_userRepository->getUserById(userId);
     if (isExistedUser.getUserId() == 0) {
+        cout << "User not found!" << endl;
         return;
     }
-    isExistedUser.setEmail("999");
-    isExistedUser.setUsername("999");
-    isExistedUser.setPassword("999");
-    isExistedUser.setPhone("999");
-    this->_userRepository->updateUser(isExistedUser);
+
+    for (int i = 0; i < _userList.GetLength(); ++i) {
+        if (_userList[i].getUserId() == userId) {
+            _userList.Remove(i);
+            break;
+        }
+    }
+
+    this->_userRepository->deleteUser(userId);
+    cout << "User deleted successfully! User ID: " << userId << endl;
 }
 
-
-List<User> UserService::getUser( int userId ) {
+List<User> UserService::getUser(int userId) {
     List<User> userList;
     User user = this->_userRepository->getUserById(userId);
-    userList.InsertLast(user);
+    if (user.getUserId() != 0) {
+        userList.InsertLast(user);
+    } else {
+        cout << "User not found!" << endl;
+    }
     return userList;
 }
 
