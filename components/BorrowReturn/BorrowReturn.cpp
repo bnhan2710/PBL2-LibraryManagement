@@ -1,67 +1,54 @@
 #include "BorrowReturn.h"
+enum Status {
+    BORROWED,
+    RETURNED
+};
 
-BorrowReturn::BorrowReturn() {
-    this->borrowReturnId = 0;
-    this->user = User();
-    this->book = Book();
-    this->borrowDate = Date();
-    this->returnDate = Date();
-    this->status = "";
+BorrowReturn::BorrowReturn(){
 }
 
-BorrowReturn::BorrowReturn(int borrowReturnId, User& user, Book& book, Date& borrowDate, Date& returnDate, string& status) {
-    this->borrowReturnId = borrowReturnId;
-    this->user = user;
-    this->book = book;
-    this->borrowDate = borrowDate;
-    this->returnDate = returnDate;
-    this->status = status;
+BorrowReturn::BorrowReturn(int id, int userId, int bookId, Date borrowAt, int num_of_days, Status status){
+    this->id = id;
+    this->userId = userId;
+    this->bookId = bookId;
+    this->borrowAt = borrowAt;
+    this->num_of_days = num_of_days;
+    this->status = Status::BORROWED;
 }
 
-void BorrowReturn::setBorrowReturnId(int borrowReturnId) {
-    this->borrowReturnId = borrowReturnId;
+BorrowReturn::~BorrowReturn(){
+
 }
 
-int BorrowReturn::getBorrowReturnId() {
-    return this->borrowReturnId;
+Date BorrowReturn::getBorrowAt(){
+    return this->borrowAt;
+}
+Date BorrowReturn::getReturnAt(){
+    Date returnAt = this->borrowAt;
+    for(int i = 0; i < this->num_of_days; i++){
+        returnAt.nextDay();
+    }
+    return returnAt;
 }
 
-void BorrowReturn::setUser(User user) {
-    this->user = user;
+
+int BorrowReturn::getNumOfDays(){
+    return this->num_of_days;
 }
 
-User BorrowReturn::getUser() {
-    return this->user;
+int BorrowReturn::getId(){
+    return this->id;
 }
 
-void BorrowReturn::setBook(Book book) {
-    this->book = book;
-}
-
-Book BorrowReturn::getBook() {
-    return this->book;
-}
-
-void BorrowReturn::setBorrowDate(Date borrowDate) {
-    this->borrowDate = borrowDate;
-}
-
-Date BorrowReturn::getBorrowDate() {
-    return this->borrowDate;
-}
-
-void BorrowReturn::setReturnDate(Date returnDate) {
-    this->returnDate = returnDate;
-}
-
-Date BorrowReturn::getReturnDate() {
-    return this->returnDate;
-}
-
-void BorrowReturn::setStatus(string status) {
-    this->status = status;
-}
-
-string BorrowReturn::getStatus() {
+Status BorrowReturn::getStatus(){
     return this->status;
 }
+
+void BorrowReturn::setStatus(Status status){
+    this->status = status;
+}
+
+void BorrowReturn::setNumOfDays(int num_of_days){
+    this->num_of_days = num_of_days;
+}
+
