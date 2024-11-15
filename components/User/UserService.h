@@ -12,8 +12,8 @@ class UserService {
         ~UserService();
     public:
     static UserService* initUserService();
-    void createUser();
-    void updateUser();
+    void createUser( string username, string email, string phone, string password );
+    void updateUser( int userId, string username, string email, string phone, string password );
     void deleteUser();
     List<User> getUser( int );
     List<User> getUser();
