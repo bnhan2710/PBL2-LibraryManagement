@@ -199,9 +199,9 @@ int main(void)
     UI ui;
     UserService* userService = UserService::initUserService();
     ui.DrawLoginForm();
-    if ( !ui.DrawLoginForm() ) {
-        return 0;
-    }
+    /* if ( !ui.DrawLoginForm() ) { */
+    /*     return 0; */
+    /* } */
     ui.InitApplication();
     ui.LoadText();
     State currentState = State::Menu;
