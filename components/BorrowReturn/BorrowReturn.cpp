@@ -7,15 +7,9 @@ enum Status {
 BorrowReturn::BorrowReturn(){
 }
 
-BorrowReturn::BorrowReturn(int id, int userId, int bookId, Date borrowAt, int num_of_days, Status status){
-    this->id = id;
-    this->userId = userId;
-    this->bookId = bookId;
-    this->borrowAt = borrowAt;
-    this->num_of_days = num_of_days;
-    this->status = Status::BORROWED;
-}
+BorrowReturn::BorrowReturn(int id, int userId, int bookId, Date borrowAt, Date returnAt, int num_of_days, Status status)
 
+        : id(id), userId(userId), bookId(bookId), borrowAt(borrowAt), returnAt(returnAt), num_of_days(num_of_days), status(status) {}
 BorrowReturn::~BorrowReturn(){
 
 }

@@ -37,7 +37,7 @@ public:
     int getNumOfPages();
     
     void setPublisherId(int publisherId);
-    int getPublishetId();
+    int getPublisherId();
     
     void setCategoryId(int categoryId);
     int getCategoryId();

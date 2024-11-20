@@ -6,7 +6,7 @@
 #include "../../utils/date/date.h"
 using namespace std;
 enum Status {
-    BORROWED,
+    BORROWING,
     RETURNED
 };
 class BorrowReturn {
@@ -15,11 +15,12 @@ private:
     int userId;
     int bookId;
     Date borrowAt;
+    Date returnAt;
     int num_of_days;
     Status status;
 public:
     BorrowReturn();
-    BorrowReturn(int id, int userId, int bookId, Date borrowAt, int num_of_days, Status status);
+    BorrowReturn(int, int, int, Date,Date, int, Status);
     ~BorrowReturn();
     Date getBorrowAt();
     Date getReturnAt();
@@ -27,7 +28,7 @@ public:
     int getNumOfDays();
     int getId();
     Status getStatus();
-    void setStatus(Status status);
-    void setNumOfDays(int num_of_days); 
+    void setStatus(Status);
+    void setNumOfDays(int); 
 };  
 #endif
