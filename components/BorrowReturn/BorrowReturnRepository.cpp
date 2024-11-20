@@ -25,18 +25,18 @@ void BorrowReturnRepository::addBorrowReturn( const BorrowReturn& borrowReturn) 
         return;
     }
 
-    outFile << borrowReturn.getId() << " "
-            << borrowReturn.getUserId() << " "
-            << borrowReturn.getBookId() << " "
-            << borrowReturn.getBorrowAt().getDay() << " "
-            << borrowReturn.getBorrowAt().getMonth() << " "
-            << borrowReturn.getBorrowAt().getYear() << " "
-            << borrowReturn.getReturnAt().getDay() << " "
-            << borrowReturn.getReturnAt().getMonth() << " "
-            << borrowReturn.getReturnAt().getYear() << " "
-            << borrowReturn.getNumOfDays() << " "
-            << borrowReturn.getStatus() << " "
-            << endl;
+    // outFile << borrowReturn.getId() << " "
+    //         << borrowReturn.getUserId() << " "
+    //         << borrowReturn.getBookId() << " "
+    //         << borrowReturn.getBorrowAt().getDay() << " "
+    //         << borrowReturn.getBorrowAt().getMonth() << " "
+    //         << borrowReturn.getBorrowAt().getYear() << " "
+    //         << borrowReturn.getReturnAt().getDay() << " "
+    //         << borrowReturn.getReturnAt().getMonth() << " "
+    //         << borrowReturn.getReturnAt().getYear() << " "
+    //         << borrowReturn.getNumOfDays() << " "
+    //         << borrowReturn.getStatus() << " "
+    //         << endl;
 
     outFile.close();
     cout << "Borrow book successful" << endl;
