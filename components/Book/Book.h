@@ -16,13 +16,13 @@ private:
     int categoryId;
     Category category;
     Publisher publisher;
-    Author author;
 public:
     Book();
     Book(int bookId, string title, Author author, int quantity, int num_of_pages, int publisherId, int categoryId);
     ~Book();
 
     void setBookId(int bookId);
+    int getBookId();
     
     void setTitle(string title);
     string getTitle();
@@ -37,7 +37,7 @@ public:
     int getNumOfPages();
     
     void setPublisherId(int publisherId);
-    int getPublisherId();
+    int getPublishetId();
     
     void setCategoryId(int categoryId);
     int getCategoryId();
@@ -47,8 +47,5 @@ public:
 
     void setPublisher(Publisher publisher);
     Publisher getPublisher();
-
-    void setAuthor(Author author);
-    Author getAuthor();
 };
 #endif

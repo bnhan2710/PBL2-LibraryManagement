@@ -6,7 +6,7 @@ SRC_DIR = src
 COMPONENTS_DIR = components
 UTILS_DIR = utils
 
-SRC_FILES = $(wildcard $(COMPONENTS_DIR)/**/*.cpp)  $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(COMPONENTS_DIR)/main.cpp)
+SRC_FILES = $(wildcard $(COMPONENTS_DIR)/**/*.cpp)  $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(COMPONENTS_DIR)/main.cpp) $(wildcard $(UTILS_DIR)/**/*.cpp)
 
 OUTPUT = program
 

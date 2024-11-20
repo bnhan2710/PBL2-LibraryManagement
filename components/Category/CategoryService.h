@@ -12,9 +12,9 @@ private:
 public:
     static CategoryService* initCategoryService();
     ~CategoryService();
-    void addCategory();
-    void updateCategory();
-    void deleteCategory();
+    void addCategory(const string&);
+    void updateCategory(const int, const string&);
+    void deleteCategory(const int);
     List<Category> getCategory( int );
     List<Category> getCategory();
 };

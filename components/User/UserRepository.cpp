@@ -1,4 +1,7 @@
 #include "UserRepository.h"
+#include "../Role/Member.h"
+#include "../Role/Admin.h"
+#include "../Role/Librarian.h"
 
 UserRepository* UserRepository::_userRepository = nullptr;
 const char* UserRepository::_userFileName = "database/User.txt";
@@ -17,7 +20,7 @@ UserRepository* UserRepository::initUserRepository() {
 UserRepository::~UserRepository() {
 }
 
-void UserRepository::addUser(User user) {
+void UserRepository::addUser(const User& user) {
     ofstream outFile;
     outFile.open(_userFileName, ios::app);
     if (!outFile.is_open()) {
@@ -30,13 +33,14 @@ void UserRepository::addUser(User user) {
             << user.getUsername() << " "
             << user.getPassword() << " "
             << user.getPhone() << " " 
+            << user.getRole()->getRoleName() << " "
             << endl;
 
     outFile.close();
     cout << "Register successful" << endl;
 }
 
-void UserRepository::updateUser(User updatedUser) {
+void UserRepository::updateUser(const User& updatedUser) {
     ifstream inFile(_userFileName);
     ofstream tempFile(_userTempFileName, ios::app);
     if (!inFile.is_open() || !tempFile.is_open()) {
@@ -46,14 +50,15 @@ void UserRepository::updateUser(User updatedUser) {
 
     bool found = false;
     int userId;
-    string email, username, password, phone;
-    while (inFile >> userId >> email >> username >> password >> phone) {
+    string email, username, password, phone, roleName;
+    while (inFile >> userId >> email >> username >> password >> phone >> roleName) {
         if (userId == updatedUser.getUserId()) {
             tempFile << updatedUser.getUserId() << " "
                      << updatedUser.getEmail() << " "
                      << updatedUser.getUsername() << " "
                      << updatedUser.getPassword() << " "
                      << updatedUser.getPhone() << " " 
+                     <<  "null" << " "
                      << endl;
             found = true;
         } else {
@@ -62,6 +67,7 @@ void UserRepository::updateUser(User updatedUser) {
                      << username << " "
                      << password << " "
                      << phone << " " 
+                     << roleName << " "
                      << endl;
         }
     }
@@ -86,8 +92,8 @@ void UserRepository::deleteUser(int userId){
     }
     bool found = false;
     int id;
-    string email, username, password, phone;
-    while (inFile >> id >> email >> username >> password >> phone) {
+    string email, username, password, phone, roleName;
+    while (inFile >> id >> email >> username >> password >> phone >> roleName) {
         if (id == userId) {
             found = true;
         } else {
@@ -96,6 +102,7 @@ void UserRepository::deleteUser(int userId){
                      << username << " "
                      << password << " "
                      << phone << " " 
+                     << roleName << " "
                      << endl;
         }
     }
@@ -118,11 +125,19 @@ User UserRepository::getUserById(int userId) {
         return User();
     }
     int id;
-    string email, username, password, phone;
-    while (inFile >> id >> email >> username >> password >> phone) {
+    string email, username, password, phone, roleName;
+    while (inFile >> id >> email >> username >> password >> phone >> roleName) {
         if (id == userId) {
+            Role* role = nullptr;
+            if (roleName == "Admin") {
+                role = new Admin();
+            } else if (roleName == "Librarian") {
+                role = new Librarian();
+            } else {
+                role = new Member();
+            }
             inFile.close();
-            return User(id, email, username, password, phone);
+            return User(id, email, username, password, phone, role);
         }
     }
     inFile.close();
@@ -138,9 +153,17 @@ List<User> UserRepository::getAllUsers() {
         return userList;
     }
     int id;
-    string email, username, password, phone;
-    while (inFile >> id >> email >> username >> password >> phone) {
-        userList.InsertLast(User(id, email, username, password, phone));
+    string email, username, password, phone, roleName;
+    while (inFile >> id >> email >> username >> password >> phone >> roleName) {
+        Role* role = nullptr;
+        if (roleName == "Admin") {
+            role = new Admin();
+        } else if (roleName == "Librarian") {
+            role = new Librarian();
+        } else {
+            role = new Member();
+        }
+        userList.InsertLast(User(id, email, username, password, phone, role));
     }
     inFile.close();
     return userList;

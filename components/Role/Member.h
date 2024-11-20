@@ -4,7 +4,7 @@
 #include "Role.h"
 #include "../../utils/List.h"
 
-class MemberRole : public Role {
+class Member : public Role {
 public:
     string getRoleName() const override;
     List<string> getPermissions() const override;

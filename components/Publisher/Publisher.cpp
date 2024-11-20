@@ -7,7 +7,7 @@ Publisher::Publisher() {
     this->contactInfo = "";
 }
 
-Publisher::Publisher(int publisherId, string& publisherName, string& address, string& contactInfo) {
+Publisher::Publisher(const int publisherId, const string& publisherName, const string& address, const string& contactInfo) {
     this->publisherId = publisherId;
     this->publisherName = publisherName;
     this->address = address;

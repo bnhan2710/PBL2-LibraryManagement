@@ -1,8 +1,6 @@
 #include "PublisherService.h"
 
 PublisherService* PublisherService::_publisherService = nullptr;
-string publisherName, address, contactInfo;
-int publisherId;
 
 PublisherService::PublisherService() {
     this->_publisherRepository = PublisherRepository::initPublisherRepository();
@@ -19,81 +17,32 @@ PublisherService* PublisherService::initPublisherService() {
 PublisherService::~PublisherService() {
 }
 
-void PublisherService::addPublisher() {
-    publisherId = this->_publisherList.GetLength() + 1;
-    cin.ignore();
-    cout << "Enter publisher name: ";
-    cin >> publisherName;
-    cin.ignore();
-    cout << "Enter address: ";
-    cin >> address;
-    cin.ignore();
-    cout << "Enter contact info: ";
-    cin >> contactInfo;
-    cin.ignore();
+void PublisherService::addPublisher(const string& publisherName, const string& address, const string& contactInfo) {
+    int publisherId = this->_publisherList.GetLength() + 1;
     Publisher publisher(publisherId, publisherName, address, contactInfo);
     this->_publisherList.InsertLast(publisher);
     this->_publisherRepository->addPublisher(publisher);
 }
 
-void PublisherService::updatePublisher() {
-    cout << "Enter publisher ID: ";
-    cin >> publisherId;
-    cin.ignore();
+void PublisherService::updatePublisher(const int publisherId, const string& publisherName, const string& address, const string& contactInfo) {
     Publisher isExistedPublisher = this->_publisherRepository->getPublisherById( publisherId );
     if (isExistedPublisher.getPublisherId() == 0) {
         return;
     }
-    int publisherChoice;
-    do {
-        cout << "=====================================\n";
-        cout << "1. Update publisherName" << endl;
-        cout << "2. Update address" << endl;
-        cout << "3. Update contactInfo" << endl;
-        cout << "4. Exit" << endl;
-        cout << "=====================================\n";
-        cout << "Enter your choice: ";
-        cin >> publisherChoice;
-        switch (publisherChoice) {
-            case 1:
-                cout << "Enter new publisherName: ";
-                cin >> publisherName;
-                cin.ignore();
-                isExistedPublisher.setPublisherName(publisherName);
-                break;
-            case 2:
-                cout << "Enter new address: ";
-                cin >> address;
-                cin.ignore();
-                isExistedPublisher.setAddress(address);
-                break;
-            case 3:
-                cout << "Enter new contactInfo: ";
-                cin >> contactInfo;
-                cin.ignore();
-                isExistedPublisher.setContactInfo(contactInfo);
-                break;
-            case 4: 
-                cout << "Exiting\n";
-                break;
-            default:
-                cout << "Invalid choice, please try again.\n";
-        }
-    } while (publisherChoice != 4);
+    isExistedPublisher.setPublisherName(publisherName);
+    isExistedPublisher.setAddress(address);
+    isExistedPublisher.setContactInfo(contactInfo);
     this->_publisherRepository->updatePublisher(isExistedPublisher);
 }
 
-void PublisherService::deletePublisher() {
-    cout << "Enter publisher ID: ";
-    cin >> publisherId;
-    cin.ignore();
+void PublisherService::deletePublisher(const int publisherId) {
     Publisher isExistedPublisher = this->_publisherRepository->getPublisherById(publisherId);
     if (isExistedPublisher.getPublisherId() == 0) {
         return;
     }
-    isExistedPublisher.setPublisherName("999");
-    isExistedPublisher.setAddress("999");
-    isExistedPublisher.setContactInfo("999");
+    isExistedPublisher.setPublisherName("0");
+    isExistedPublisher.setAddress("0");
+    isExistedPublisher.setContactInfo("0");
     this->_publisherRepository->updatePublisher(isExistedPublisher);
 }
 

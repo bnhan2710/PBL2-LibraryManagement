@@ -130,6 +130,5 @@ List<Category> CategoryRepository::getAllCategories() {
         categories.InsertLast(Category(CategoryId, CategoryName));
     }
     inFile.close();
-    cout << "CategoryId not found" << endl;
     return categories;
 }

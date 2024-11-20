@@ -5,7 +5,7 @@ Category::Category() {
     this->categoryName = "";
 }
 
-Category::Category(int categoryId, string& categoryName) {
+Category::Category(int categoryId, const string& categoryName) {
     this->categoryId = categoryId;
     this->categoryName = categoryName;
 }
