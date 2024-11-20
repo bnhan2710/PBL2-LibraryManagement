@@ -19,7 +19,6 @@ User::User(int userId, const string& email, const string& username, const string
 }
 
 User::~User() {
-    delete this->role;
 }
 
 void User::setUserId(int userId) {

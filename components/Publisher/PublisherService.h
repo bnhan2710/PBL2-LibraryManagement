@@ -12,9 +12,9 @@ private:
 public:
     ~PublisherService();
     static PublisherService* initPublisherService();
-    void addPublisher();
-    void updatePublisher();
-    void deletePublisher();
+    void addPublisher(const string&, const string&, const string&);
+    void updatePublisher(const int, const string&, const string&, const string&);
+    void deletePublisher(const int);
     List<Publisher> getPublisher( int );
     List<Publisher> getPublisher();
 

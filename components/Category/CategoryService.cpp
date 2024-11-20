@@ -1,8 +1,6 @@
 #include "CategoryService.h"
 
 CategoryService* CategoryService::_categoryService = nullptr;
-string categoryName;
-int categoryId;
 
 CategoryService::CategoryService() {
     this->_categoriesRepository = CategoryRepository::initCategoryRepository();
@@ -19,60 +17,30 @@ CategoryService* CategoryService::initCategoryService() {
 CategoryService::~CategoryService() {
 }
 
-void CategoryService::addCategory() {
-    categoryId = this->_categoriesList.GetLength() + 1;
-    cin.ignore();
-    cout << "Enter category name: ";
-    cin >> categoryName;
-    cin.ignore();
+void CategoryService::addCategory(const string& categoryName) {
+    int categoryId = this->_categoriesList.GetLength() + 1;
+
     Category category(categoryId, categoryName);
+
     this->_categoriesList.InsertLast(category);
     this->_categoriesRepository->addCategory(category);
 }
 
-void CategoryService::updateCategory() {
-    cout << "Enter category ID: ";
-    cin >> categoryId;
-    cin.ignore();
+void CategoryService::updateCategory(int categoryId, const string& categoryName) {
     Category isExistedCategory = this->_categoriesRepository->getCategoryById(categoryId);
     if (isExistedCategory.getCategoryId() == 0) {
         return;
     }
-    int categoryChoice;
-    do {
-        cout << "=====================================\n";
-        cout << "1. Update categoryName" << endl;
-        cout << "2. Exit" << endl;
-        cout << "=====================================\n";
-        cout << "Enter your choice: ";
-        cin >> categoryChoice;
-
-        switch (categoryChoice) {
-            case 1:
-                cout << "Enter new categoryName: ";
-                cin >> categoryName;
-                cin.ignore();
-                isExistedCategory.setCategoryName(categoryName);
-                break;
-            case 2: 
-                cout << "Exiting\n";
-                break;
-            default:
-                cout << "Invalid choice, please try again.\n";
-        }
-    } while (categoryChoice != 2);
+    isExistedCategory.setCategoryName(categoryName);
     this->_categoriesRepository->updateCategory(isExistedCategory);
 }
 
-void CategoryService::deleteCategory() {
-    cout << "Enter category ID: ";
-    cin >> categoryId;
-    cin.ignore();
+void CategoryService::deleteCategory(int categoryId) {
     Category isExistedCategory = this->_categoriesRepository->getCategoryById(categoryId);
     if (isExistedCategory.getCategoryId() == 0) {
         return;
     }
-    isExistedCategory.setCategoryName("Deleted");
+    isExistedCategory.setCategoryName("0");
     this->_categoriesRepository->updateCategory(isExistedCategory);
 }
 

@@ -14,7 +14,6 @@ UserService::UserService() {
 }
 
 UserService::~UserService() {
-    delete _userRepository;
 }
 
 UserService* UserService::initUserService() {
@@ -36,7 +35,7 @@ void UserService::createUser(const string& username, const string& email, const 
     cout << "User created successfully! Username: " << username << endl;
 }
 
-void UserService::updateUser(int userId, const string& username, const string& email, const string& phone, const string& password, Role* role) {
+void UserService::updateUser(const int userId, const string& username, const string& email, const string& phone, const string& password, Role* role) {
     User isExistedUser = this->_userRepository->getUserById(userId);
     if (isExistedUser.getUserId() == 0) {
         cout << "User not found!" << endl;
@@ -56,7 +55,7 @@ void UserService::updateUser(int userId, const string& username, const string& e
     cout << "User updated successfully! User ID: " << userId << endl;
 }
 
-void UserService::deleteUser(int userId) {
+void UserService::deleteUser(const int userId) {
 
     User isExistedUser = this->_userRepository->getUserById(userId);
     if (isExistedUser.getUserId() == 0) {
@@ -64,14 +63,14 @@ void UserService::deleteUser(int userId) {
         return;
     }
 
-    for (int i = 0; i < _userList.GetLength(); ++i) {
-        if (_userList[i].getUserId() == userId) {
-            _userList.Remove(i);
-            break;
-        }
+    isExistedUser.setUsername("0");
+    isExistedUser.setEmail("0");
+    isExistedUser.setPhone("0");
+    isExistedUser.setPassword("0");
+    if (isExistedUser.getRole() != nullptr) {
+        isExistedUser.setRole(nullptr);
     }
-
-    this->_userRepository->deleteUser(userId);
+    this->_userRepository->updateUser(isExistedUser);
     cout << "User deleted successfully! User ID: " << userId << endl;
 }
 

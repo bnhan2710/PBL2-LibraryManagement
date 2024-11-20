@@ -18,8 +18,8 @@ public:
     static UserService* initUserService();
 
     void createUser(const string& username, const string& email, const string& phone, const string& password, Role* role = nullptr);
-    void updateUser(int userId, const string& username, const string& email, const string& phone, const string& password, Role* role = nullptr);
-    void deleteUser(int userId);
+    void updateUser(const int userId, const string& username, const string& email, const string& phone, const string& password, Role* role = nullptr);
+    void deleteUser(const int userId);
     List<User> getUser(int userId);
     List<User> getUser();
 

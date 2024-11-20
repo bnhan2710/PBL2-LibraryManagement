@@ -16,8 +16,8 @@ bool Auth::login(string username, string password) {
         return false;
     }
 
-    string id, email, user, pass, phone;
-    while (file >> id >> email >> user >> pass >> phone) { 
+    string id, email, user, pass, phone, role;
+    while (file >> id >> email >> user >> pass >> phone >> role) { 
         if (user == username) { 
             if (pass == password) {
                 file.close();
