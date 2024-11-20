@@ -7,12 +7,14 @@ int main(void)
     UserService* userService = UserService::initUserService();
     CategoryService* categoryService = CategoryService::initCategoryService();
     PublisherService* publisherService = PublisherService::initPublisherService();
-    if ( !ui.DrawLoginForm() ) {
+    BookService* bookService = BookService::initBookService();
+    if ( !ui.DrawLoginForm(userService) ) {
          return 0;
     }
     ui.InitApplication();
     ui.LoadText();
     State currentState = State::Menu;
+    TraceLog(LOG_INFO, TextFormat("Role of user: %d", roleOfUser));
     while (!WindowShouldClose() && currentState != State::Exit )
     {
         float wheelMove = GetMouseWheelMove();
@@ -21,7 +23,13 @@ int main(void)
         ClearBackground(RAYWHITE);
         switch (currentState) {
             case State::Menu: {
-                currentState = ui.DrawFunctionBar();
+                if (roleOfUser == RoleOfUser::_Admin) {
+                    currentState = ui.DrawAdminFunctionBar();
+                } else if (roleOfUser == RoleOfUser::_Librarian) {
+                    currentState = ui.DrawLibrarianFunctionBar();
+                } else if (roleOfUser == RoleOfUser::_Member) {
+                    currentState = ui.DrawMemberFunctionBar();
+                }
                 break;
             }
             case State::User: {
@@ -40,6 +48,8 @@ int main(void)
                 break;
             }
             case State::Book: {
+                ui.DrawBookTable( bookService, wheelMove, mousePos);
+                currentState = ui.DrawBackButton(currentState);
                 break;
             }
             case State::BorrowReturn: {
