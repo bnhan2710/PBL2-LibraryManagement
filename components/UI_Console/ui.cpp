@@ -403,6 +403,7 @@ class UI {
                     }
                     if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
                         string categoryName = string(_categoryName);
+                        categoryService->addCategory(categoryName);
                         onAddOpen = !onAddOpen;
                     }
                     EndDrawing();
@@ -847,7 +848,7 @@ class UI {
                         string publisher = string(_publisher);
                         string category = string(_category);
                         string code = string(_code);
-                        int quantity = stoi(_quantity);
+                        int quantity = atoi(_quantity);
                         bookService->addBook(code, title, author, publisher, category, quantity);
                         onAddOpen = !onAddOpen;
                     }
@@ -919,7 +920,7 @@ class UI {
                         string publisher = string(_publisher);
                         string category = string(_category);
                         string code = string(_code);
-                        int quantity = stoi(_quantity);
+                        int quantity = atoi(_quantity);
                         bookService->updateBook(idSelected, code, title, author, publisher, category, quantity);
                         onEditOpen = !onEditOpen;
                         idSelected = -1;
@@ -988,9 +989,9 @@ class UI {
             DrawTextEx(textFont, "ID", Vector2{tableBounds.x + 10, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "Code", Vector2{tableBounds.x + 80, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "Title", Vector2{tableBounds.x + 180, tableBounds.y + 10}, 20, 2, DARKGRAY);
-            DrawTextEx(textFont, "Category", Vector2{tableBounds.x + 430, tableBounds.y + 10}, 20, 2, DARKGRAY);
-            DrawTextEx(textFont, "Author", Vector2{tableBounds.x + 680, tableBounds.y + 10}, 20, 2, DARKGRAY);
-            DrawTextEx(textFont, "Publisher", Vector2{tableBounds.x + 930, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Author", Vector2{tableBounds.x + 430, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Publisher", Vector2{tableBounds.x + 680, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Category", Vector2{tableBounds.x + 930, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "Quantity", Vector2{tableBounds.x + 1160, tableBounds.y + 10}, 20, 2, DARKGRAY);
 
             if (wheelMove != 0.0 && wheelMove > 0 ||
@@ -1035,7 +1036,7 @@ class UI {
                         }
                     }
                 }
-                if ( bookList[i].getTitle() == "0" && bookList[i].getAuthor() == "0" && bookList[i].getPublisher() == "0" && bookList[i].getCategory() == "0" && bookList[i].getQuantity() == 0 ) {
+                if ( bookList[i].getTitle() == "0" && bookList[i].getCode() == "0" && bookList[i].getAuthor() == "0" && bookList[i].getPublisher() == "0" && bookList[i].getCategory() == "0" && bookList[i].getQuantity() == 0 ) {
                     continue;
                 }
                 if ( rowSelected != i ) {
