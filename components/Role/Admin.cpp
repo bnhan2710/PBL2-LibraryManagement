@@ -5,12 +5,12 @@ string Admin::getRoleName() const {
 }
 
 List<string> Admin::getPermissions() const {     
-     List<string> permissions; 
-     permissions.InsertLast("Manage Users"); 
-     permissions.InsertLast("Manage Books"); 
-     permissions.InsertLast("Manage Category");
-     permissions.InsertLast("Manage Author");
-     permissions.InsertLast("Manage Publisher");
-     return permissions; 
+    List<string> permissions; 
+    permissions.InsertLast("Manage Users"); 
+    permissions.InsertLast("Manage Books"); 
+    permissions.InsertLast("Manage Categories");
+    permissions.InsertLast("Manage Authors");
+    permissions.InsertLast("Manage Publishers");
+    return permissions; 
 }
 

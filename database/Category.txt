@@ -1,31 +1,31 @@
-1 action 
-2 education 
-3 technology 
-4 historical 
-5 science 
-6 self-help 
-7 technology 
-8 adventure 
-9 0 
-10 psychology 
-11 science 
-12 self-help 
-13 technology 
-14 strategy 
-15 fantasy 
-16 environment 
-17 history 
-18 sci-fi 
-19 cooking 
-20 historical 
-21 education 
-22 sci-fi 
-23 nature 
-24 0 
-25 horror 
-26 psychology 
-27 technology 
-28 adventure 
-29 0 
-30 0 
-31 0
+1|action
+2|education
+3|technology
+4|historical
+5|science
+6|self-help
+7|technology
+8|adventure
+9|0
+10|psychology
+11|science
+12|self-help
+13|technology
+14|strategy
+15|fantasy
+16|environment
+17|history
+18|sci-fi
+19|cooking
+20|historical
+21|education
+22|sci-fi
+23|nature
+24|0
+25|horror
+26|psychology
+27|technology
+28|adventure
+29|0
+30|0
+31|0

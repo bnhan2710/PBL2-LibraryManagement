@@ -5,10 +5,10 @@ string Librarian::getRoleName() const {
 }
 
 List<string> Librarian::getPermissions() const {     
-     List<string> permissions; 
-     permissions.InsertLast("Manage Books"); 
-     permissions.InsertLast("Manage Category");
-     permissions.InsertLast("Manage Author");
-     permissions.InsertLast("Manage Publisher");
-     return permissions; 
+    List<string> permissions; 
+    permissions.InsertLast("Manage Books"); 
+    permissions.InsertLast("Manage Categories");
+    permissions.InsertLast("Manage Authors");
+    permissions.InsertLast("Manage Publishers");
+    return permissions; 
 }

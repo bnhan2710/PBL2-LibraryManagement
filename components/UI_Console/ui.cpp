@@ -25,6 +25,8 @@ static const int windowHeight = 880;
 static const int loginWidth = 600;
 static const int loginHeight = 680;
 static int roleOfUser = -1;
+static Role* role = nullptr;
+static List<string> permissions;
 Font textFont, titleFont;
 
 enum State {
@@ -43,7 +45,6 @@ enum RoleOfUser {
     _Librarian,
     _Member
 };
-
 class UI {
     private:
         char* text = new char[64];
@@ -90,172 +91,174 @@ class UI {
                     }
                 }
             }
-            if ( roleOfUser != RoleOfUser::_Member ) {
-            if( GuiButton(addBtnBounds, "Add new User") ) {
-                char *_username = new char[32];
-                char *_email = new char[32];
-                char *_phone = new char[32];
-                char *_password = new char[32];
-                const char *_role = "Member;Librarian";
-                int roleSelected = 0;
-                bool userEdit = false;
-                bool emailEdit = false;
-                bool phoneEdit = false;
-                bool passwordEdit = false;
-                bool roleEdit = false;
-                _username = strcpy(_username, "");
-                _email = strcpy(_email, "");
-                _phone = strcpy(_phone, "");
-                _password = strcpy(_password, "");
-                while (!onAddOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onAddOpen = !onAddOpen;
-                    }
-                    DrawTextEx(titleFont, "Add new User", Vector2{textDivBounds.x + 300, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 520, 150, 40 }, "Add") ) {
-                        string username = string(_username);
-                        string email = string(_email);
-                        string phone = string(_phone);
-                        string password = string(_password);
-                        if ( roleSelected == 0 ) {
-                            userService->createUser(username, email, phone, password, new Member());
-                        } else if ( roleSelected == 1 ) {
-                            userService->createUser(username, email, phone, password, new Librarian());
+            for( int i = 0; i < permissions.GetLength(); i++ ) {
+                if ( permissions[i] == "Manage Users" ) {
+                    if( GuiButton(addBtnBounds, "Add new User") ) {
+                        char *_username = new char[32];
+                        char *_email = new char[32];
+                        char *_phone = new char[32];
+                        char *_password = new char[32];
+                        const char *_role = "Member;Librarian";
+                        int roleSelected = 0;
+                        bool userEdit = false;
+                        bool emailEdit = false;
+                        bool phoneEdit = false;
+                        bool passwordEdit = false;
+                        bool roleEdit = false;
+                        _username = strcpy(_username, "");
+                        _email = strcpy(_email, "");
+                        _phone = strcpy(_phone, "");
+                        _password = strcpy(_password, "");
+                        while (!onAddOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onAddOpen = !onAddOpen;
+                            }
+                            DrawTextEx(titleFont, "Add new User", Vector2{textDivBounds.x + 300, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 520, 150, 40 }, "Add") ) {
+                                string username = string(_username);
+                                string email = string(_email);
+                                string phone = string(_phone);
+                                string password = string(_password);
+                                if ( roleSelected == 0 ) {
+                                    userService->createUser(username, email, phone, password, new Member());
+                                } else if ( roleSelected == 1 ) {
+                                    userService->createUser(username, email, phone, password, new Librarian());
+                                }
+                                onAddOpen = !onAddOpen;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 120, 250, 40 }, "Username");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 120, 450, 40 }, _username, 64, userEdit)) {
+                                _username = strcpy(_username, _username);
+                                userEdit = !userEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 200, 250, 40 }, "Email");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 200, 450, 40 }, _email, 64, emailEdit) ) {
+                                _email = strcpy(_email, _email);
+                                emailEdit = !emailEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 280, 250, 40 }, "Phone");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 280, 450, 40 }, _phone, 64, phoneEdit) ) {
+                                _phone = strcpy(_phone, _phone);
+                                phoneEdit = !phoneEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 360, 250, 40 }, "Password");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 360, 450, 40 }, _password, 64, passwordEdit) ) {
+                                _password = strcpy(_password, _password);
+                                passwordEdit = !passwordEdit;
+                            }                    
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 440, 250, 40 }, "Role");
+                            if ( GuiDropdownBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 440, 450, 40 }, _role, &roleSelected, roleEdit) ) {
+                                roleEdit = !roleEdit;
+                            }                    
+                            EndDrawing();
                         }
-                        onAddOpen = !onAddOpen;
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 120, 250, 40 }, "Username");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 120, 450, 40 }, _username, 64, userEdit)) {
-                        _username = strcpy(_username, _username);
-                        userEdit = !userEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 200, 250, 40 }, "Email");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 200, 450, 40 }, _email, 64, emailEdit) ) {
-                        _email = strcpy(_email, _email);
-                        emailEdit = !emailEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 280, 250, 40 }, "Phone");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 280, 450, 40 }, _phone, 64, phoneEdit) ) {
-                        _phone = strcpy(_phone, _phone);
-                        phoneEdit = !phoneEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 360, 250, 40 }, "Password");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 360, 450, 40 }, _password, 64, passwordEdit) ) {
-                        _password = strcpy(_password, _password);
-                        passwordEdit = !passwordEdit;
-                    }                    
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 440, 250, 40 }, "Role");
-                    if ( GuiDropdownBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 440, 450, 40 }, _role, &roleSelected, roleEdit) ) {
-                        roleEdit = !roleEdit;
-                    }                    
-                    EndDrawing();
-                }
-            }
-            onAddOpen = false;
-            if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
-                char *_username = new char[32];
-                char *_email = new char[32];
-                char *_phone = new char[32];
-                char *_password = new char[32];
-                const char *_role = "Member;Librarian";
-                int roleSelected = 0;
-                bool userEdit = false;
-                bool emailEdit = false;
-                bool phoneEdit = false;
-                bool passwordEdit = false;
-                bool roleEdit = false;
-                _username = strcpy(_username, userList[idSelected - 1].getUsername().c_str());
-                _email = strcpy(_email, userList[idSelected - 1].getEmail().c_str());
-                _phone = strcpy(_phone, userList[idSelected - 1].getPhone().c_str());
-                _password = strcpy(_password, userList[idSelected - 1].getPassword().c_str());
-                if ( userList[idSelected - 1].getRole()->getRoleName() == "Member" ) {
-                    roleSelected = 0;
-                } else if ( userList[idSelected - 1].getRole()->getRoleName() == "Librarian" ) {
-                    roleSelected = 1;
-                } else {
-                    roleSelected = -1;
-                }
-                while (!onEditOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onEditOpen = !onEditOpen;
-                    }
-                    DrawTextEx(titleFont, "Edit User", Vector2{textDivBounds.x + 350, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 520, 150, 40 }, "Save") ) {
-                        string username = string(_username);
-                        string email = string(_email);
-                        string phone = string(_phone);
-                        string password = string(_password);
-                        if ( roleSelected == 0 ) {
-                            userService->updateUser(idSelected, username, email, phone, password, new Member());
-                        } else if ( roleSelected == 1 ) {
-                            userService->updateUser(idSelected, username, email, phone, password, new Librarian());
+                    onAddOpen = false;
+                    if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
+                        char *_username = new char[32];
+                        char *_email = new char[32];
+                        char *_phone = new char[32];
+                        char *_password = new char[32];
+                        const char *_role = "Member;Librarian";
+                        int roleSelected = 0;
+                        bool userEdit = false;
+                        bool emailEdit = false;
+                        bool phoneEdit = false;
+                        bool passwordEdit = false;
+                        bool roleEdit = false;
+                        _username = strcpy(_username, userList[idSelected - 1].getUsername().c_str());
+                        _email = strcpy(_email, userList[idSelected - 1].getEmail().c_str());
+                        _phone = strcpy(_phone, userList[idSelected - 1].getPhone().c_str());
+                        _password = strcpy(_password, userList[idSelected - 1].getPassword().c_str());
+                        if ( userList[idSelected - 1].getRole()->getRoleName() == "Member" ) {
+                            roleSelected = 0;
+                        } else if ( userList[idSelected - 1].getRole()->getRoleName() == "Librarian" ) {
+                            roleSelected = 1;
+                        } else {
+                            roleSelected = -1;
                         }
-                        onEditOpen = !onEditOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
+                        while (!onEditOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onEditOpen = !onEditOpen;
+                            }
+                            DrawTextEx(titleFont, "Edit User", Vector2{textDivBounds.x + 350, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 520, 150, 40 }, "Save") ) {
+                                string username = string(_username);
+                                string email = string(_email);
+                                string phone = string(_phone);
+                                string password = string(_password);
+                                if ( roleSelected == 0 ) {
+                                    userService->updateUser(idSelected, username, email, phone, password, new Member());
+                                } else if ( roleSelected == 1 ) {
+                                    userService->updateUser(idSelected, username, email, phone, password, new Librarian());
+                                }
+                                onEditOpen = !onEditOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 120, 250, 40 }, "Username");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 120, 450, 40 }, _username, 64, userEdit)) {
+                                _username = strcpy(_username, _username);
+                                userEdit = !userEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 200, 250, 40 }, "Email");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 200, 450, 40 }, _email, 64, emailEdit) ) {
+                                _email = strcpy(_email, _email);
+                                emailEdit = !emailEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 280, 250, 40 }, "Phone");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 280, 450, 40 }, _phone, 64, phoneEdit) ) {
+                                _phone = strcpy(_phone, _phone);
+                                phoneEdit = !phoneEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 360, 250, 40 }, "Password");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 360, 450, 40 }, _password, 64, passwordEdit) ) {
+                                _password = strcpy(_password, _password);
+                                passwordEdit = !passwordEdit;
+                            } 
+                            if ( roleSelected != -1 ) {
+                                GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 440, 250, 40 }, "Role");
+                                if ( GuiDropdownBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 440, 450, 40 }, _role, &roleSelected, roleEdit) ) {
+                                    roleEdit = !roleEdit;
+                                }                    
+                            }
+                            EndDrawing();
+                        }
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 120, 250, 40 }, "Username");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 120, 450, 40 }, _username, 64, userEdit)) {
-                        _username = strcpy(_username, _username);
-                        userEdit = !userEdit;
+                    onEditOpen = false;
+                    if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(deleteTextDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
+                                userService->deleteUser(idSelected);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 200, 250, 40 }, "Email");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 200, 450, 40 }, _email, 64, emailEdit) ) {
-                        _email = strcpy(_email, _email);
-                        emailEdit = !emailEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 280, 250, 40 }, "Phone");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 280, 450, 40 }, _phone, 64, phoneEdit) ) {
-                        _phone = strcpy(_phone, _phone);
-                        phoneEdit = !phoneEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 360, 250, 40 }, "Password");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 360, 450, 40 }, _password, 64, passwordEdit) ) {
-                        _password = strcpy(_password, _password);
-                        passwordEdit = !passwordEdit;
-                    } 
-                    if ( roleSelected != -1 ) {
-                        GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 440, 250, 40 }, "Role");
-                        if ( GuiDropdownBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 440, 450, 40 }, _role, &roleSelected, roleEdit) ) {
-                            roleEdit = !roleEdit;
-                        }                    
-                    }
-                    EndDrawing();
+                    onDeleteOpen = false;
                 }
-            }
-            onEditOpen = false;
-            if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
-                while (!onDeleteOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(deleteTextDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
-                        userService->deleteUser(idSelected);
-                        onDeleteOpen = !onDeleteOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    EndDrawing();
-                }
-            }
-            onDeleteOpen = false;
-            }
+            } 
             int cnt = 0;
             DrawRectangleRec(tableBounds, LIGHTGRAY);
             DrawTextEx(textFont, "ID", Vector2{tableBounds.x + 10, tableBounds.y + 10}, 20, 2, DARKGRAY);
@@ -382,86 +385,88 @@ class UI {
                     }
                 }
             }
-            if( roleOfUser != RoleOfUser::_Member ) {
-            if( GuiButton(addBtnBounds, "Add Category") ) {
-                char *_categoryName = new char[32];
-                bool categoryNameEdit = false;
-                _categoryName = strcpy(_categoryName, "");
-                while (!onAddOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onAddOpen = !onAddOpen;
+            for( int i = 0; i < permissions.GetLength(); i++ ) {
+                if ( permissions[i] == "Manage Categories" ) {
+                    if( GuiButton(addBtnBounds, "Add Category") ) {
+                        char *_categoryName = new char[32];
+                        bool categoryNameEdit = false;
+                        _categoryName = strcpy(_categoryName, "");
+                        while (!onAddOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onAddOpen = !onAddOpen;
+                            }
+                            DrawTextEx(titleFont, "Add Category", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Category Name");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 250, 450, 40 }, _categoryName, 64, categoryNameEdit)) {
+                                _categoryName = strcpy(_categoryName, _categoryName);
+                                categoryNameEdit = !categoryNameEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
+                                string categoryName = string(_categoryName);
+                                categoryService->addCategory(categoryName);
+                                onAddOpen = !onAddOpen;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    DrawTextEx(titleFont, "Add Category", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Category Name");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 250, 450, 40 }, _categoryName, 64, categoryNameEdit)) {
-                        _categoryName = strcpy(_categoryName, _categoryName);
-                        categoryNameEdit = !categoryNameEdit;
+                    onAddOpen = false;
+                    if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
+                        char *_categoryName = new char[32];
+                        bool categoryNameEdit = false;
+                        _categoryName = strcpy(_categoryName, categoryList[idSelected - 1].getCategoryName().c_str());
+                        while (!onEditOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onEditOpen = !onEditOpen;
+                            }
+                            DrawTextEx(titleFont, "Edit category", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Category Name");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 250, 450, 40 }, _categoryName, 64, categoryNameEdit)) {
+                                _categoryName = strcpy(_categoryName, _categoryName);
+                                categoryNameEdit = !categoryNameEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Save") ) {
+                                string categoryName = string(_categoryName);
+                                categoryService->updateCategory(idSelected, categoryName );
+                                onEditOpen = !onEditOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
-                        string categoryName = string(_categoryName);
-                        categoryService->addCategory(categoryName);
-                        onAddOpen = !onAddOpen;
+                    onEditOpen = false;
+                    if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(deleteTextDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
+                                categoryService->deleteCategory(idSelected);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    EndDrawing();
+                    onDeleteOpen = false;
                 }
-            }
-            onAddOpen = false;
-            if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
-                char *_categoryName = new char[32];
-                bool categoryNameEdit = false;
-                _categoryName = strcpy(_categoryName, categoryList[idSelected - 1].getCategoryName().c_str());
-                while (!onEditOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onEditOpen = !onEditOpen;
-                    }
-                    DrawTextEx(titleFont, "Edit category", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Category Name");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 250, 450, 40 }, _categoryName, 64, categoryNameEdit)) {
-                        _categoryName = strcpy(_categoryName, _categoryName);
-                        categoryNameEdit = !categoryNameEdit;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Save") ) {
-                        string categoryName = string(_categoryName);
-                        categoryService->updateCategory(idSelected, categoryName );
-                        onEditOpen = !onEditOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    EndDrawing();
-                }
-            }
-            onEditOpen = false;
-            if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
-                while (!onDeleteOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(deleteTextDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
-                        categoryService->deleteCategory(idSelected);
-                        onDeleteOpen = !onDeleteOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    EndDrawing();
-                }
-            }
-            onDeleteOpen = false;
             }
             int cnt = 0;
             DrawRectangleRec(tableBounds, LIGHTGRAY);
@@ -575,122 +580,124 @@ class UI {
                     }
                 }
             }
-            if ( roleOfUser != RoleOfUser::_Member ) {
-            if( GuiButton(addBtnBounds, "Add Publisher") ) {
-                char *_publisherName = new char[32];
-                char *_address = new char[32];
-                char *_contactInfo = new char[32];
-                bool publisherEdit = false;
-                bool addressEdit = false;
-                bool contactInfoEdit = false;
-                _publisherName = strcpy(_publisherName, "");
-                _address = strcpy(_address, "");
-                _contactInfo= strcpy(_contactInfo, "");
-                while (!onAddOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onAddOpen = !onAddOpen;
+            for( int i = 0; i < permissions.GetLength(); i++ ) {
+                if ( permissions[i] == "Manage Publishers" ) {
+                    if( GuiButton(addBtnBounds, "Add Publisher") ) {
+                        char *_publisherName = new char[32];
+                        char *_address = new char[32];
+                        char *_contactInfo = new char[32];
+                        bool publisherEdit = false;
+                        bool addressEdit = false;
+                        bool contactInfoEdit = false;
+                        _publisherName = strcpy(_publisherName, "");
+                        _address = strcpy(_address, "");
+                        _contactInfo= strcpy(_contactInfo, "");
+                        while (!onAddOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onAddOpen = !onAddOpen;
+                            }
+                            DrawTextEx(titleFont, "Add Publisher", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Publisher Name");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _publisherName, 64, publisherEdit)) {
+                                _publisherName = strcpy(_publisherName, _publisherName);
+                                publisherEdit = !publisherEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 230, 250, 40 }, "Address");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 230, 450, 40 }, _address, 64, addressEdit) ) {
+                                _address = strcpy(_address, _address);
+                                addressEdit = !addressEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 310, 250, 40 }, "Contact Info");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 310, 450, 40 }, _contactInfo, 64, contactInfoEdit) ) {
+                                _contactInfo = strcpy(_contactInfo, _contactInfo);
+                                contactInfoEdit = !contactInfoEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
+                                string publisherName = string(_publisherName);
+                                string address = string(_address);
+                                string contactInfo = string(_contactInfo);
+                                publisherService->addPublisher(publisherName, address, contactInfo);
+                                onAddOpen = !onAddOpen;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    DrawTextEx(titleFont, "Add Publisher", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Publisher Name");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _publisherName, 64, publisherEdit)) {
-                        _publisherName = strcpy(_publisherName, _publisherName);
-                        publisherEdit = !publisherEdit;
+                    onAddOpen = false;
+                    if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
+                        char *_publisherName = new char[32];
+                        char *_address = new char[32];
+                        char *_contactInfo = new char[32];
+                        bool publisherEdit = false;
+                        bool addressEdit = false;
+                        bool contactInfoEdit = false;
+                        _publisherName = strcpy(_publisherName, publisherList[idSelected - 1].getPublisherName().c_str());
+                        _address = strcpy(_address, publisherList[idSelected - 1].getAddress().c_str());
+                        _contactInfo = strcpy(_contactInfo, publisherList[idSelected - 1].getContactInfo().c_str());
+                        while (!onEditOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onEditOpen = !onEditOpen;
+                            }
+                            DrawTextEx(titleFont, "Edit Publisher", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Publisher Name");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _publisherName, 64, publisherEdit)) {
+                                _publisherName = strcpy(_publisherName, _publisherName);
+                                publisherEdit = !publisherEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 230, 250, 40 }, "Address");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 230, 450, 40 }, _address, 64, addressEdit) ) {
+                                _address = strcpy(_address, _address);
+                                addressEdit = !addressEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 310, 250, 40 }, "Contact Info");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 310, 450, 40 }, _contactInfo, 64, contactInfoEdit) ) {
+                                _contactInfo = strcpy(_contactInfo, _contactInfo);
+                                contactInfoEdit = !contactInfoEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Save") ) {
+                                string publisherName = string(_publisherName);
+                                string address = string(_address);
+                                string contactInfo = string(_contactInfo);
+                                publisherService->updatePublisher(idSelected, publisherName, address, contactInfo);
+                                onEditOpen = !onEditOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 230, 250, 40 }, "Address");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 230, 450, 40 }, _address, 64, addressEdit) ) {
-                        _address = strcpy(_address, _address);
-                        addressEdit = !addressEdit;
+                    onEditOpen = false;
+                    if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(deleteTextDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
+                                publisherService->deletePublisher(idSelected);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 310, 250, 40 }, "Contact Info");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 310, 450, 40 }, _contactInfo, 64, contactInfoEdit) ) {
-                        _contactInfo = strcpy(_contactInfo, _contactInfo);
-                        contactInfoEdit = !contactInfoEdit;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
-                        string publisherName = string(_publisherName);
-                        string address = string(_address);
-                        string contactInfo = string(_contactInfo);
-                        publisherService->addPublisher(publisherName, address, contactInfo);
-                        onAddOpen = !onAddOpen;
-                    }
-                    EndDrawing();
+                    onDeleteOpen = false;
                 }
-            }
-            onAddOpen = false;
-            if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
-                char *_publisherName = new char[32];
-                char *_address = new char[32];
-                char *_contactInfo = new char[32];
-                bool publisherEdit = false;
-                bool addressEdit = false;
-                bool contactInfoEdit = false;
-                _publisherName = strcpy(_publisherName, publisherList[idSelected - 1].getPublisherName().c_str());
-                _address = strcpy(_address, publisherList[idSelected - 1].getAddress().c_str());
-                _contactInfo = strcpy(_contactInfo, publisherList[idSelected - 1].getContactInfo().c_str());
-                while (!onEditOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onEditOpen = !onEditOpen;
-                    }
-                    DrawTextEx(titleFont, "Edit Publisher", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Publisher Name");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _publisherName, 64, publisherEdit)) {
-                        _publisherName = strcpy(_publisherName, _publisherName);
-                        publisherEdit = !publisherEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 230, 250, 40 }, "Address");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 230, 450, 40 }, _address, 64, addressEdit) ) {
-                        _address = strcpy(_address, _address);
-                        addressEdit = !addressEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 310, 250, 40 }, "Contact Info");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 310, 450, 40 }, _contactInfo, 64, contactInfoEdit) ) {
-                        _contactInfo = strcpy(_contactInfo, _contactInfo);
-                        contactInfoEdit = !contactInfoEdit;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Save") ) {
-                        string publisherName = string(_publisherName);
-                        string address = string(_address);
-                        string contactInfo = string(_contactInfo);
-                        publisherService->updatePublisher(idSelected, publisherName, address, contactInfo);
-                        onEditOpen = !onEditOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    EndDrawing();
-                }
-            }
-            onEditOpen = false;
-            if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
-                while (!onDeleteOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(deleteTextDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
-                        publisherService->deletePublisher(idSelected);
-                        onDeleteOpen = !onDeleteOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    EndDrawing();
-                }
-            }
-            onDeleteOpen = false;
             }
             int cnt = 0;
             DrawRectangleRec(tableBounds, LIGHTGRAY);
@@ -813,176 +820,178 @@ class UI {
                     }
                 }
             }
-            if( roleOfUser != RoleOfUser::_Member ) {
-            if( GuiButton(addBtnBounds, "Add Book") ) {
-                char *_title = new char[32];
-                char *_author = new char[32];
-                char *_publisher = new char[32];
-                char *_category = new char[32];
-                char *_quantity = new char[32];
-                char *_code = new char[32];
-                bool titleEdit = false;
-                bool authorEdit = false;
-                bool publisherEdit = false;
-                bool categoryEdit = false;
-                bool quantityEdit = false;
-                bool codeEdit = false;
-                _code = strcpy(_code, "");
-                _title = strcpy(_title, "");
-                _author = strcpy(_author, "");
-                _publisher = strcpy(_publisher, "");
-                _category = strcpy(_category, "");
-                _quantity = strcpy(_quantity, "");
-                while (!onAddOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onAddOpen = !onAddOpen;
+            for( int i = 0; i < permissions.GetLength(); i++ ) {
+                if ( permissions[i] == "Manage Books" ) {
+                    if( GuiButton(addBtnBounds, "Add Book") ) {
+                        char *_title = new char[32];
+                        char *_author = new char[32];
+                        char *_publisher = new char[32];
+                        char *_category = new char[32];
+                        char *_quantity = new char[32];
+                        char *_code = new char[32];
+                        bool titleEdit = false;
+                        bool authorEdit = false;
+                        bool publisherEdit = false;
+                        bool categoryEdit = false;
+                        bool quantityEdit = false;
+                        bool codeEdit = false;
+                        _code = strcpy(_code, "");
+                        _title = strcpy(_title, "");
+                        _author = strcpy(_author, "");
+                        _publisher = strcpy(_publisher, "");
+                        _category = strcpy(_category, "");
+                        _quantity = strcpy(_quantity, "");
+                        while (!onAddOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onAddOpen = !onAddOpen;
+                            }
+                            DrawTextEx(titleFont, "Add new Book", Vector2{textDivBounds.x + 300, textDivBounds.y + 20}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 550, 150, 40 }, "Add") ) {
+                                string title = string(_title);
+                                string author = string(_author);
+                                string publisher = string(_publisher);
+                                string category = string(_category);
+                                string code = string(_code);
+                                int quantity = atoi(_quantity);
+                                bookService->addBook(code, title, author, publisher, category, quantity);
+                                onAddOpen = !onAddOpen;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 90, 250, 40 }, "Title");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 90, 450, 40 }, _title, 64, titleEdit)) {
+                                _title = strcpy(_title, _title);
+                                titleEdit = !titleEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 170, 250, 40 }, "Code");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 170, 450, 40 }, _code, 64, codeEdit) ) {
+                                _code = strcpy(_code, _code);
+                                codeEdit = !codeEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Author");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 250, 450, 40 }, _author, 64, authorEdit) ) {
+                                _author = strcpy(_author, _author);
+                                authorEdit = !authorEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 330, 250, 40 }, "Publisher");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 330, 450, 40 }, _publisher, 64, publisherEdit) ) {
+                                _publisher = strcpy(_publisher, _publisher);
+                                publisherEdit = !publisherEdit;
+                            } 
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 410, 250, 40 }, "Category");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 410, 450, 40 }, _category, 64, categoryEdit) ) {
+                                _category = strcpy(_category, _category);
+                                categoryEdit = !categoryEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 490, 250, 40 }, "Quantity");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 490, 450, 40 }, _quantity, 64, quantityEdit) ) {
+                                _quantity = strcpy(_quantity, _quantity);
+                                quantityEdit = !quantityEdit;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    DrawTextEx(titleFont, "Add new Book", Vector2{textDivBounds.x + 300, textDivBounds.y + 20}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 550, 150, 40 }, "Add") ) {
-                        string title = string(_title);
-                        string author = string(_author);
-                        string publisher = string(_publisher);
-                        string category = string(_category);
-                        string code = string(_code);
-                        int quantity = atoi(_quantity);
-                        bookService->addBook(code, title, author, publisher, category, quantity);
-                        onAddOpen = !onAddOpen;
+                    onAddOpen = false;
+                    if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
+                        char *_title = new char[32];
+                        char *_author = new char[32];
+                        char *_publisher = new char[32];
+                        char *_category = new char[32];
+                        char *_quantity = new char[32];
+                        char *_code = new char[32];
+                        bool titleEdit = false;
+                        bool authorEdit = false;
+                        bool publisherEdit = false;
+                        bool categoryEdit = false;
+                        bool quantityEdit = false;
+                        bool codeEdit = false;
+                        _code = strcpy(_code, bookList[idSelected - 1].getCode().c_str());
+                        _title = strcpy(_title, bookList[idSelected - 1].getTitle().c_str());
+                        _author = strcpy(_author, bookList[idSelected - 1].getAuthor().c_str());
+                        _publisher = strcpy(_publisher, bookList[idSelected - 1].getPublisher().c_str());
+                        _category = strcpy(_category, bookList[idSelected - 1].getCategory().c_str());
+                        _quantity = strcpy(_quantity, to_string(bookList[idSelected - 1].getQuantity()).c_str());
+                        while (!onEditOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onEditOpen = !onEditOpen;
+                            }
+                            DrawTextEx(titleFont, "Edit Book", Vector2{textDivBounds.x + 350, textDivBounds.y + 20}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 550, 150, 40 }, "Save") ) {
+                                string title = string(_title);
+                                string author = string(_author);
+                                string publisher = string(_publisher);
+                                string category = string(_category);
+                                string code = string(_code);
+                                int quantity = atoi(_quantity);
+                                bookService->updateBook(idSelected, code, title, author, publisher, category, quantity);
+                                onEditOpen = !onEditOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 90, 250, 40 }, "Title");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 90, 450, 40 }, _title, 64, titleEdit)) {
+                                _title = strcpy(_title, _title);
+                                titleEdit = !titleEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 170, 250, 40 }, "Code");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 170, 450, 40 }, _code, 64, codeEdit) ) {
+                                _code = strcpy(_code, _code);
+                                codeEdit = !codeEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Author");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 250, 450, 40 }, _author, 64, authorEdit) ) {
+                                _author = strcpy(_author, _author);
+                                authorEdit = !authorEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 330, 250, 40 }, "Publisher");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 330, 450, 40 }, _publisher, 64, publisherEdit) ) {
+                                _publisher = strcpy(_publisher, _publisher);
+                                publisherEdit = !publisherEdit;
+                            } 
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 410, 250, 40 }, "Category");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 410, 450, 40 }, _category, 64, categoryEdit) ) {
+                                _category = strcpy(_category, _category);
+                                categoryEdit = !categoryEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 490, 250, 40 }, "Quantity");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 490, 450, 40 }, _quantity, 64, quantityEdit) ) {
+                                _quantity = strcpy(_quantity, _quantity);
+                                quantityEdit = !quantityEdit;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 90, 250, 40 }, "Title");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 90, 450, 40 }, _title, 64, titleEdit)) {
-                        _title = strcpy(_title, _title);
-                        titleEdit = !titleEdit;
+                    onEditOpen = false;
+                    if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(deleteTextDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
+                                bookService->deleteBook(idSelected);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            EndDrawing();
+                        }
                     }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 170, 250, 40 }, "Code");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 170, 450, 40 }, _code, 64, codeEdit) ) {
-                        _code = strcpy(_code, _code);
-                        codeEdit = !codeEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Author");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 250, 450, 40 }, _author, 64, authorEdit) ) {
-                        _author = strcpy(_author, _author);
-                        authorEdit = !authorEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 330, 250, 40 }, "Publisher");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 330, 450, 40 }, _publisher, 64, publisherEdit) ) {
-                        _publisher = strcpy(_publisher, _publisher);
-                        publisherEdit = !publisherEdit;
-                    } 
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 410, 250, 40 }, "Category");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 410, 450, 40 }, _category, 64, categoryEdit) ) {
-                        _category = strcpy(_category, _category);
-                        categoryEdit = !categoryEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 490, 250, 40 }, "Quantity");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 490, 450, 40 }, _quantity, 64, quantityEdit) ) {
-                        _quantity = strcpy(_quantity, _quantity);
-                        quantityEdit = !quantityEdit;
-                    }
-                    EndDrawing();
+                    onDeleteOpen = false;
                 }
-            }
-            onAddOpen = false;
-            if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
-                char *_title = new char[32];
-                char *_author = new char[32];
-                char *_publisher = new char[32];
-                char *_category = new char[32];
-                char *_quantity = new char[32];
-                char *_code = new char[32];
-                bool titleEdit = false;
-                bool authorEdit = false;
-                bool publisherEdit = false;
-                bool categoryEdit = false;
-                bool quantityEdit = false;
-                bool codeEdit = false;
-                _code = strcpy(_code, bookList[idSelected - 1].getCode().c_str());
-                _title = strcpy(_title, bookList[idSelected - 1].getTitle().c_str());
-                _author = strcpy(_author, bookList[idSelected - 1].getAuthor().c_str());
-                _publisher = strcpy(_publisher, bookList[idSelected - 1].getPublisher().c_str());
-                _category = strcpy(_category, bookList[idSelected - 1].getCategory().c_str());
-                _quantity = strcpy(_quantity, to_string(bookList[idSelected - 1].getQuantity()).c_str());
-                while (!onEditOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(textDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onEditOpen = !onEditOpen;
-                    }
-                    DrawTextEx(titleFont, "Edit Book", Vector2{textDivBounds.x + 350, textDivBounds.y + 20}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 550, 150, 40 }, "Save") ) {
-                        string title = string(_title);
-                        string author = string(_author);
-                        string publisher = string(_publisher);
-                        string category = string(_category);
-                        string code = string(_code);
-                        int quantity = atoi(_quantity);
-                        bookService->updateBook(idSelected, code, title, author, publisher, category, quantity);
-                        onEditOpen = !onEditOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 90, 250, 40 }, "Title");
-                    if (GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 90, 450, 40 }, _title, 64, titleEdit)) {
-                        _title = strcpy(_title, _title);
-                        titleEdit = !titleEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 170, 250, 40 }, "Code");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 170, 450, 40 }, _code, 64, codeEdit) ) {
-                        _code = strcpy(_code, _code);
-                        codeEdit = !codeEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 250, 250, 40 }, "Author");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 250, 450, 40 }, _author, 64, authorEdit) ) {
-                        _author = strcpy(_author, _author);
-                        authorEdit = !authorEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 330, 250, 40 }, "Publisher");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 330, 450, 40 }, _publisher, 64, publisherEdit) ) {
-                        _publisher = strcpy(_publisher, _publisher);
-                        publisherEdit = !publisherEdit;
-                    } 
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 410, 250, 40 }, "Category");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 410, 450, 40 }, _category, 64, categoryEdit) ) {
-                        _category = strcpy(_category, _category);
-                        categoryEdit = !categoryEdit;
-                    }
-                    GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 490, 250, 40 }, "Quantity");
-                    if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 490, 450, 40 }, _quantity, 64, quantityEdit) ) {
-                        _quantity = strcpy(_quantity, _quantity);
-                        quantityEdit = !quantityEdit;
-                    }
-                    EndDrawing();
-                }
-            }
-            onEditOpen = false;
-            if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
-                while (!onDeleteOpen)
-                {
-                    BeginDrawing();
-                    ClearBackground(GRAY);
-                    DrawRectangleRec(deleteTextDivBounds, WHITE);
-                    if( GuiButton(closeDivBounds, "X") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
-                        bookService->deleteBook(idSelected);
-                        onDeleteOpen = !onDeleteOpen;
-                        idSelected = -1;
-                        rowSelected = -1;
-                    }
-                    if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
-                        onDeleteOpen = !onDeleteOpen;
-                    }
-                    EndDrawing();
-                }
-            }
-            onDeleteOpen = false;
             }
             int cnt = 0;
             DrawRectangleRec(tableBounds, LIGHTGRAY);
@@ -1145,6 +1154,7 @@ class UI {
                     string _password = string(password);
                     List<class User> userList = userService->getUser();
                     for (int i = 0; i < userList.GetLength(); i++) {
+                        TraceLog(LOG_INFO, "Id: %d Username: %s, Password: %s Email: %s Phone: %s Role: %s", userList[i].getUserId() , userList[i].getUsername().c_str(), userList[i].getPassword().c_str(), userList[i].getEmail().c_str(), userList[i].getPhone().c_str(), userList[i].getRole()->getRoleName().c_str()); 
                         if ( userList[i].getUsername() == _username && userList[i].getPassword() == _password ) {
                             if ( userList[i].getRole()->getRoleName() == "Admin" ) {
                                 roleOfUser = RoleOfUser::_Admin;

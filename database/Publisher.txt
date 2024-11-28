@@ -1,30 +1,30 @@
-1 baonhan Hue contact1@example.com 
-2 EducationPress 456ElmSt contact2@example.com 
-3 TechWorld 789MapleAve contact3@example.com 
-4 JapanClassics 321OakDr contact4@example.com 
-5 0 0 0 
-6 LifeHarmony 987CedarRd contact6@example.com 
-7 AIPublications 213BirchCt contact7@example.com 
-8 MountainTales 546SpruceBlvd contact8@example.com 
-9 CodingGuides 879WalnutSt contact9@example.com 
-10 DreamWorks 365AshAve contact10@example.com 
-11 AstroPress 741ChestnutDr contact11@example.com 
-12 LifestylePress 852PoplarLn contact12@example.com 
-13 SpaceTech 963SycamoreRd contact13@example.com 
-14 GameWorld 147RedwoodCt contact14@example.com 
-15 MagicTales 258MagnoliaBlvd contact15@example.com 
-16 GreenEarth 369WillowSt contact16@example.com 
-17 MythClassics 741AspenAve contact17@example.com 
-18 GalaxyPublications 963AlderDr contact18@example.com 
-19 ChefWorld 852SequoiaLn contact19@example.com 
-20 NovelPress 147BeechRd contact20@example.com 
-21 MathMasters 258DogwoodCt contact21@example.com 
-22 RoboticsPress 369HickoryBlvd contact22@example.com 
-23 NaturePress 741JuniperSt contact23@example.com 
-24 CosmosBooks 963FirAve contact24@example.com 
-25 ThrillWriters 852CypressDr contact25@example.com 
-26 MindMasters 147PalmLn contact26@example.com 
-27 AlgorithmPress 258AcaciaRd contact27@example.com 
-28 SurvivalTales 369BanyanCt contact28@example.com 
-29 RebelWriters 741MahoganyBlvd contact29@example.com 
-30 0 0 0 
+1|baonhan|Hue|contact1@example.com
+2|EducationPress|456ElmSt|contact2@example.com
+3|TechWorld|789MapleAve|contact3@example.com
+4|JapanClassics|321OakDr|contact4@example.com
+5|0|0|0
+6|LifeHarmony|987CedarRd|contact6@example.com
+7|AIPublications|213BirchCt|contact7@example.com
+8|MountainTales|546SpruceBlvd|contact8@example.com
+9|CodingGuides|879WalnutSt|contact9@example.com
+10|DreamWorks|365AshAve|contact10@example.com
+11|AstroPress|741ChestnutDr|contact11@example.com
+12|LifestylePress|852PoplarLn|contact12@example.com
+13|SpaceTech|963SycamoreRd|contact13@example.com
+14|GameWorld|147RedwoodCt|contact14@example.com
+15|MagicTales|258MagnoliaBlvd|contact15@example.com
+16|GreenEarth|369WillowSt|contact16@example.com
+17|MythClassics|741AspenAve|contact17@example.com
+18|GalaxyPublications|963AlderDr|contact18@example.com
+19|ChefWorld|852SequoiaLn|contact19@example.com
+20|NovelPress|147BeechRd|contact20@example.com
+21|MathMasters|258DogwoodCt|contact21@example.com
+22|RoboticsPress|369HickoryBlvd|contact22@example.com
+23|NaturePress|741JuniperSt|contact23@example.com
+24|CosmosBooks|963FirAve|contact24@example.com
+25|ThrillWriters|852CypressDr|contact25@example.com
+26|MindMasters|147PalmLn|contact26@example.com
+27|AlgorithmPress|258AcaciaRd|contact27@example.com
+28|SurvivalTales|369BanyanCt|contact28@example.com
+29|RebelWriters|741MahoganyBlvd|contact29@example.com
+30|0|0|0

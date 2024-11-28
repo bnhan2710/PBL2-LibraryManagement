@@ -1,11 +1,15 @@
 #include "CategoryRepository.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+using namespace std;
 
 CategoryRepository* CategoryRepository::_categoryRepository = nullptr;
 const char* CategoryRepository::_categoryFileName = "database/Category.txt";
 const char* CategoryRepository::_categoryTempFileName = "database/TempCategory.txt";
 
-CategoryRepository::CategoryRepository() {
-}
+CategoryRepository::CategoryRepository() {}
 
 CategoryRepository* CategoryRepository::initCategoryRepository() {
     if (_categoryRepository == nullptr) {
@@ -14,20 +18,18 @@ CategoryRepository* CategoryRepository::initCategoryRepository() {
     return _categoryRepository;
 }
 
-CategoryRepository::~CategoryRepository() {
-}
+CategoryRepository::~CategoryRepository() {}
 
 void CategoryRepository::addCategory(Category category) {
-    ofstream outFile;
-    outFile.open(_categoryFileName, ios::app);
+    ofstream outFile(_categoryFileName, ios::app);
     if (!outFile.is_open()) {
-        cerr << "Can't not open file to read and write" << endl;
+        cerr << "Can't not open file to write" << endl;
         return;
     }
 
-    outFile << category.getCategoryId() << " " 
-            << category.getCategoryName() << " "
-            << endl;
+    // Ghi dữ liệu theo định dạng phân cách bằng `|`
+    outFile << category.getCategoryId() << "|"
+            << category.getCategoryName() << endl;
 
     outFile.close();
     cout << "Add category successful" << endl;
@@ -35,31 +37,39 @@ void CategoryRepository::addCategory(Category category) {
 
 void CategoryRepository::updateCategory(Category category) {
     ifstream inFile(_categoryFileName);
-    ofstream tempFile(_categoryTempFileName, ios::app);
+    ofstream tempFile(_categoryTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {
         cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
+    string line;
     bool found = false;
-    int categoryId;
-    string categoryName;
-    while (inFile >> categoryId >> categoryName) {
-        if (categoryId == category.getCategoryId()) {
-            tempFile << category.getCategoryId() << " " << category.getCategoryName() << endl;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, name;
+
+        getline(ss, idStr, '|');
+        getline(ss, name, '|');
+
+        int id = atoi(idStr.c_str());
+
+        if (id == category.getCategoryId()) {
+            tempFile << category.getCategoryId() << "|"
+                     << category.getCategoryName() << endl;
             found = true;
         } else {
-            tempFile << categoryId << " " 
-                     << categoryName << " "
-                     << endl;
+            tempFile << idStr << "|" << name << endl;
         }
     }
+
     inFile.close();
     tempFile.close();
+
     if (found) {
         remove(_categoryFileName);
         rename(_categoryTempFileName, _categoryFileName);
-        cout << "Updated category successful" << endl;
+        cout << "Updated category successfully" << endl;
     } else {
         remove(_categoryTempFileName);
         cout << "Category not found" << endl;
@@ -68,30 +78,37 @@ void CategoryRepository::updateCategory(Category category) {
 
 void CategoryRepository::deleteCategory(int categoryId) {
     ifstream inFile(_categoryFileName);
-    ofstream tempFile(_categoryTempFileName, ios::app);
+    ofstream tempFile(_categoryTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {
         cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
+    string line;
     bool found = false;
-    int CategoryId;
-    string CategoryName;
-    while (inFile >> CategoryId >> CategoryName) {
-        if (CategoryId == categoryId) {
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, name;
+
+        getline(ss, idStr, '|');
+        getline(ss, name, '|');
+
+        int id = atoi(idStr.c_str());
+
+        if (id == categoryId) {
             found = true;
         } else {
-            tempFile << CategoryId << " " 
-                     << CategoryName << " " 
-                     << endl;
+            tempFile << idStr << "|" << name << endl;
         }
     }
+
     inFile.close();
     tempFile.close();
+
     if (found) {
         remove(_categoryFileName);
         rename(_categoryTempFileName, _categoryFileName);
-        cout << "Deleted category successful" << endl;
+        cout << "Deleted category successfully" << endl;
     } else {
         remove(_categoryTempFileName);
         cout << "Category not found" << endl;
@@ -101,19 +118,28 @@ void CategoryRepository::deleteCategory(int categoryId) {
 Category CategoryRepository::getCategoryById(int categoryId) {
     ifstream inFile(_categoryFileName);
     if (!inFile.is_open()) {
-        cerr << "Can't not open file to read and write" << endl;
+        cerr << "Can't not open file to read" << endl;
         return Category();
     }
-    int CategoryId;
-    string CategoryName;
-    while (inFile >> CategoryId >> CategoryName) {
-        if (CategoryId == categoryId) {
+
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, name;
+
+        getline(ss, idStr, '|');
+        getline(ss, name, '|');
+
+        int id = atoi(idStr.c_str());
+
+        if (id == categoryId) {
             inFile.close();
-            return Category(CategoryId, CategoryName);
+            return Category(id, name);
         }
     }
+
     inFile.close();
-    cout << "CategoryId not found" << endl;
+    cout << "Category not found" << endl;
     return Category();
 }
 
@@ -121,14 +147,23 @@ List<Category> CategoryRepository::getAllCategories() {
     ifstream inFile(_categoryFileName);
     List<Category> categories;
     if (!inFile.is_open()) {
-        cerr << "Can't not open file to read and write" << endl;
+        cerr << "Can't not open file to read" << endl;
         return categories;
     }
-    int CategoryId;
-    string CategoryName;
-    while (inFile >> CategoryId >> CategoryName) {
-        categories.InsertLast(Category(CategoryId, CategoryName));
+
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, name;
+
+        getline(ss, idStr, '|');
+        getline(ss, name, '|');
+
+        int id = atoi(idStr.c_str());
+
+        categories.InsertLast(Category(id, name));
     }
+
     inFile.close();
     return categories;
 }

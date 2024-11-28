@@ -1,11 +1,15 @@
 #include "BookRepository.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+using namespace std;
 
 BookRepository* BookRepository::_bookRepository = nullptr;
 const char* BookRepository::_bookFileName = "database/Book.txt";
 const char* BookRepository::_bookTempFileName = "database/TempBook.txt";
 
-BookRepository::BookRepository() {
-}
+BookRepository::BookRepository() {}
 
 BookRepository* BookRepository::initBookRepository() {
     if (_bookRepository == nullptr) {
@@ -14,25 +18,23 @@ BookRepository* BookRepository::initBookRepository() {
     return _bookRepository;
 }
 
-BookRepository::~BookRepository() {
-}
+BookRepository::~BookRepository() {}
 
 void BookRepository::addBook(Book book) {
-    ofstream outFile;
-    outFile.open(_bookFileName, ios::app);
+    ofstream outFile(_bookFileName, ios::app);
     if (!outFile.is_open()) {
-        cerr << "Can't not open file to read and write" << endl;
+        cerr << "Can't not open file to write" << endl;
         return;
     }
 
-    outFile << book.getBookId() << " "
-            << book.getCode() << " "
-            << book.getTitle() << " "
-            << book.getAuthor() << " "
-            << book.getCategory() << " "
-            << book.getPublisher() << " "
-            << book.getQuantity() << " "
-            << endl;
+    // Ghi dữ liệu theo định dạng `|`
+    outFile << book.getBookId() << "|"
+            << book.getCode() << "|"
+            << book.getTitle() << "|"
+            << book.getAuthor() << "|"
+            << book.getCategory() << "|"
+            << book.getPublisher() << "|"
+            << book.getQuantity() << endl;
 
     outFile.close();
     cout << "Add book successful" << endl;
@@ -40,43 +42,49 @@ void BookRepository::addBook(Book book) {
 
 void BookRepository::updateBook(Book book) {
     ifstream inFile(_bookFileName);
-    ofstream tempFile(_bookTempFileName, ios::app);
+    ofstream tempFile(_bookTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {
         cerr << "Can't not open file to read and write" << endl;
         return;
     }
 
+    string line;
     bool found = false;
-    int BookId;
-    string Title, Author, Category, Publisher, Code;
-    int Quantity;
-    while( inFile >> BookId >> Code >> Title >> Author >> Category >> Publisher >> Quantity ) {
-        if ( BookId == book.getBookId() ) {
-            tempFile << book.getBookId() << " "
-                     << book.getCode() << " "
-                     << book.getTitle() << " "
-                     << book.getAuthor() << " "
-                     << book.getCategory() << " "
-                     << book.getPublisher() << " "
-                     << book.getQuantity() << " "
-                     << endl;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, code, title, author, category, publisher, quantityStr;
+
+        getline(ss, idStr, '|');
+        getline(ss, code, '|');
+        getline(ss, title, '|');
+        getline(ss, author, '|');
+        getline(ss, category, '|');
+        getline(ss, publisher, '|');
+        getline(ss, quantityStr, '|');
+
+        int id = atoi(idStr.c_str());
+
+        if (id == book.getBookId()) {
+            tempFile << book.getBookId() << "|"
+                     << book.getCode() << "|"
+                     << book.getTitle() << "|"
+                     << book.getAuthor() << "|"
+                     << book.getCategory() << "|"
+                     << book.getPublisher() << "|"
+                     << book.getQuantity() << endl;
             found = true;
         } else {
-            tempFile << BookId << " "
-                     << Title << " "
-                     << Author << " "
-                     << Category << " "
-                     << Publisher << " "
-                     << Quantity << " "
-                     << endl;
+            tempFile << line << endl;
         }
     }
+
     inFile.close();
     tempFile.close();
+
     if (found) {
         remove(_bookFileName);
         rename(_bookTempFileName, _bookFileName);
-        cout << "Updated book successful" << endl;
+        cout << "Updated book successfully" << endl;
     } else {
         remove(_bookTempFileName);
         cout << "Book not found" << endl;
@@ -85,35 +93,36 @@ void BookRepository::updateBook(Book book) {
 
 void BookRepository::deleteBook(int bookId) {
     ifstream inFile(_bookFileName);
-    ofstream tempFile(_bookTempFileName, ios::app);
+    ofstream tempFile(_bookTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {
         cerr << "Can't not open file to read and write" << endl;
         return;
     }
+
+    string line;
     bool found = false;
-    int BookId;
-    string Title, Author, Category, Publisher, Code;
-    int Quantity;
-    while (inFile >> BookId >> Code >> Title >> Author >> Category >> Publisher >> Quantity) {
-        if (BookId == bookId) {
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr;
+
+        getline(ss, idStr, '|');
+
+        int id = atoi(idStr.c_str());
+
+        if (id == bookId) {
             found = true;
         } else {
-            tempFile << BookId << " "
-                     << Code << " "
-                     << Title << " "
-                     << Author << " "
-                     << Category << " "
-                     << Publisher << " "
-                     << Quantity << " "
-                     << endl;
+            tempFile << line << endl;
         }
     }
+
     inFile.close();
     tempFile.close();
+
     if (found) {
         remove(_bookFileName);
         rename(_bookTempFileName, _bookFileName);
-        cout << "Deleted book successful" << endl;
+        cout << "Deleted book successfully" << endl;
     } else {
         remove(_bookTempFileName);
         cout << "Book not found" << endl;
@@ -123,19 +132,32 @@ void BookRepository::deleteBook(int bookId) {
 Book BookRepository::getBookById(int bookId) {
     ifstream inFile(_bookFileName);
     if (!inFile.is_open()) {
-        cerr << "Can't not open file to read and write" << endl;
+        cerr << "Can't not open file to read" << endl;
         return Book();
     }
-    int BookId;
-    string Title, Author, Category, Publisher, Code;
-    int Quantity;
-    while (inFile >> BookId >> Code >> Title >> Author >> Category >> Publisher >> Quantity) {
-        if (BookId == bookId) {
+
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, code, title, author, category, publisher, quantityStr;
+
+        getline(ss, idStr, '|');
+        getline(ss, code, '|');
+        getline(ss, title, '|');
+        getline(ss, author, '|');
+        getline(ss, category, '|');
+        getline(ss, publisher, '|');
+        getline(ss, quantityStr, '|');
+
+        int id = atoi(idStr.c_str());
+        if (id == bookId) {
             inFile.close();
-            return Book(BookId, Code, Title, Author, Category, Publisher, Quantity);
+            return Book(id, code, title, author, category, publisher, atoi(quantityStr.c_str()));
         }
     }
+
     inFile.close();
+    cout << "Book not found" << endl;
     return Book();
 }
 
@@ -143,16 +165,27 @@ List<Book> BookRepository::getAllBooks() {
     ifstream inFile(_bookFileName);
     List<Book> bookList;
     if (!inFile.is_open()) {
-        cerr << "Can't not open file to read and write" << endl;
+        cerr << "Can't not open file to read" << endl;
         return bookList;
     }
-    int BookId;
-    string Title, Author, Category, Publisher, Code;
-    int Quantity;
-    while (inFile >> BookId >> Code >> Title >> Author >> Category >> Publisher >> Quantity) {
-        bookList.InsertLast(Book(BookId, Code, Title, Author, Category, Publisher, Quantity));
+
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string idStr, code, title, author, category, publisher, quantityStr;
+
+        getline(ss, idStr, '|');
+        getline(ss, code, '|');
+        getline(ss, title, '|');
+        getline(ss, author, '|');
+        getline(ss, category, '|');
+        getline(ss, publisher, '|');
+        getline(ss, quantityStr, '|');
+
+        int id = atoi(idStr.c_str());
+        bookList.InsertLast(Book(id, code, title, author, category, publisher, atoi(quantityStr.c_str())));
     }
+
     inFile.close();
     return bookList;
 }
-

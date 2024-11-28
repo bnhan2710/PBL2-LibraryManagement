@@ -1,8 +1,4 @@
-1 vancuong1808@gmail.com vancuong 123 567 Admin
-2 baonhan2710@gmail.com baonhan 123 456 Librarian
-3 baocules@gmail.com baocules 123 567 Member
-4 baonhan1808@gmail.com baonhan 567 123 Member
-5 baocules@gmail.com baocules 800 090 Admin
-6 bao baonhan123@ 456 11111 Librarian
-7 cunity1808@gmail.com cunity 1234 12345678910 Member 
-8 unity1808@gmail.com unity 1808 090 Member 
+1|vancuong1808@gmail.com|vancuong|123|567|Admin
+2|baonhan2710@gmail.com|baonhan|123|456|Librarian
+3|baocules@gmail.com|bao cules|123|567|Member
+4|baodep@gmail.com|bao dep|567|123456|Member

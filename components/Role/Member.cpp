@@ -5,10 +5,13 @@ string Member::getRoleName() const {
 }
 
 List<string> Member::getPermissions() const {     
-     List<string> permissions; 
-     permissions.InsertLast("View Books");
-     permissions.InsertLast("Borrow Books"); 
-     permissions.InsertLast("Return Books");
-     permissions.InsertLast("View Borrowed Books");
-     return permissions; 
+    List<string> permissions; 
+    permissions.InsertLast("View Publishers");
+    permissions.InsertLast("View Categories");
+    permissions.InsertLast("View Authors");
+    permissions.InsertLast("View Books");
+    permissions.InsertLast("View Borrowed Books");
+    permissions.InsertLast("Borrow Books"); 
+    permissions.InsertLast("Return Books");
+    return permissions; 
 }

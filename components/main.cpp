@@ -24,10 +24,16 @@ int main(void)
         switch (currentState) {
             case State::Menu: {
                 if (roleOfUser == RoleOfUser::_Admin) {
+                    role = new Admin();
+                    permissions = role->getPermissions();
                     currentState = ui.DrawAdminFunctionBar();
                 } else if (roleOfUser == RoleOfUser::_Librarian) {
+                    role = new Librarian();
+                    permissions = role->getPermissions();
                     currentState = ui.DrawLibrarianFunctionBar();
                 } else if (roleOfUser == RoleOfUser::_Member) {
+                    role = new Member();
+                    permissions = role->getPermissions();
                     currentState = ui.DrawMemberFunctionBar();
                 }
                 break;
