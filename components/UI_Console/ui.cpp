@@ -1499,7 +1499,7 @@ class UI {
                             if( GuiButton(closeDivBounds, "X") ) {
                                 onEditOpen = !onEditOpen;
                             }
-                            DrawTextEx(titleFont, "Add Author", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            DrawTextEx(titleFont, "Edit Author", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Author Name");
                             if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _authorName, 64, authorEdit)) {
                                 _authorName = strcpy(_authorName, _authorName);
