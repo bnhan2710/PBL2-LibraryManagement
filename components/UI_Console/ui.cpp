@@ -1853,6 +1853,7 @@ class UI {
         }
 
         State DrawLibrarianFunctionBar() {
+            DrawTextureEx(logo, Vector2{ (int)(windowWidth / 2) - 40, 30 }, 0.0f, 0.5f, WHITE);
             DrawTextEx(titleFont, "MENU", Vector2{ ( windowWidth / 2 ) - 50, 150 }, 40, 2, DARKGRAY);
             if (GuiButton(Rectangle{(int)(windowWidth / 2) - 400, 300, 200, 75}, "Category")) {
                 scrollPosition = 0;
@@ -1891,6 +1892,7 @@ class UI {
         }
 
         State DrawMemberFunctionBar() {
+            DrawTextureEx(logo, Vector2{ (int)(windowWidth / 2) - 40, 30 }, 0.0f, 0.5f, WHITE);
             DrawTextEx(titleFont, "MENU", Vector2{ ( windowWidth / 2 ) - 50, 150 }, 40, 2, DARKGRAY);
             if (GuiButton(Rectangle{(int)(windowWidth / 2) - 400, 300, 200, 75}, "Category")) {
                 scrollPosition = 0;
