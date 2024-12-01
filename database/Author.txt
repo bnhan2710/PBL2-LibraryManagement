@@ -1,2 +1,20 @@
-1|vancuong|18-8-2005|facebook
-2|0|0-0-0|0
+1|John Doe|15-4-1985|Famous novelist in the 20th century
+2|Jane Smith|8-12-1990|Specialized in historical fiction
+3|Emily Johnson|22-06-1978|Renowned poet and essayist
+4|Michael Brown|12-09-1982|Expert in science fiction writing
+5|Sarah Davis|30-01-1975|Childrens book author
+6|Chris Wilson|17-04-1983|Writer and illustrator
+7|Jessica Miller|05-07-1989|Fiction and thriller novelist
+8|David Anderson|20-12-1967|Literature professor and author
+9|Daniel Taylor|01-03-1991|Author of several fantasy series
+10|Laura Martinez|10-10-1980|Focuses on romantic novels
+11|Matthew Hernandez|03-05-1986|Writes about philosophy and ethics
+12|Sophia Moore|25-08-1979|Known for her detective stories
+13|James Martin|14-07-1992|Short story specialist
+14|Olivia Clark|02-02-1974|Environmental journalist and author
+15|Benjamin Hall|18-11-1983|Biography and memoir author
+16|Mia Walker|07-09-1988|Travel writer and food critic
+17|William Young|28-06-1985|Writes educational books
+18|Ava King|06-12-1993|Popular for horror novels
+19|Alexander Wright|19-01-1977|Fantasy and adventure author
+20|Isabella Scott|23-03-1980|Focuses on non-fiction essays

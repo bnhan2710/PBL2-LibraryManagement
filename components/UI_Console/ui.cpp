@@ -1491,13 +1491,13 @@ class UI {
                         month = strcpy(month, to_string(_month).c_str());
                         year = strcpy(year, to_string(_year).c_str());
                         cnt = 0;
-                        while (!onAddOpen)
+                        while (!onEditOpen)
                         {
                             BeginDrawing();
                             ClearBackground(GRAY);
                             DrawRectangleRec(textDivBounds, WHITE);
                             if( GuiButton(closeDivBounds, "X") ) {
-                                onAddOpen = !onAddOpen;
+                                onEditOpen = !onEditOpen;
                             }
                             DrawTextEx(titleFont, "Add Author", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Author Name");
@@ -1526,7 +1526,7 @@ class UI {
                                 year = strcpy(year, year);
                                 yearEdit = !yearEdit;
                             }
-                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Save") ) {
                                 string authorName = string(_authorName);
                                 string authorInfo = string(_authorInfo);
                                 int dayInt = atoi(day);
