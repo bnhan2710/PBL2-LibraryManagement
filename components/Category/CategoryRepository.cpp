@@ -20,14 +20,13 @@ CategoryRepository* CategoryRepository::initCategoryRepository() {
 
 CategoryRepository::~CategoryRepository() {}
 
-void CategoryRepository::addCategory(Category category) {
+void CategoryRepository::addCategory(const Category& category) {
     ofstream outFile(_categoryFileName, ios::app);
     if (!outFile.is_open()) {
         cerr << "Can't not open file to write" << endl;
         return;
     }
 
-    // Ghi dữ liệu theo định dạng phân cách bằng `|`
     outFile << category.getCategoryId() << "|"
             << category.getCategoryName() << endl;
 
@@ -35,7 +34,7 @@ void CategoryRepository::addCategory(Category category) {
     cout << "Add category successful" << endl;
 }
 
-void CategoryRepository::updateCategory(Category category) {
+void CategoryRepository::updateCategory(const Category& category) {
     ifstream inFile(_categoryFileName);
     ofstream tempFile(_categoryTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {

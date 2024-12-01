@@ -18,7 +18,7 @@ void Publisher::setPublisherId(int publisherId) {
     this->publisherId = publisherId;
 }
 
-int Publisher::getPublisherId() {
+int Publisher::getPublisherId() const {
     return this->publisherId;
 }
 
@@ -26,7 +26,7 @@ void Publisher::setPublisherName(string publisherName) {
     this->publisherName = publisherName;
 }
 
-string Publisher::getPublisherName() {
+string Publisher::getPublisherName() const {
     return this->publisherName;
 }
 
@@ -34,7 +34,7 @@ void Publisher::setAddress(string address) {
     this->address = address;
 }
 
-string Publisher::getAddress() {
+string Publisher::getAddress() const {
     return this->address;
 }
 
@@ -42,6 +42,6 @@ void Publisher::setContactInfo(string contactInfo) {
     this->contactInfo = contactInfo;
 }
 
-string Publisher::getContactInfo() {
+string Publisher::getContactInfo() const {
     return this->contactInfo;
 }

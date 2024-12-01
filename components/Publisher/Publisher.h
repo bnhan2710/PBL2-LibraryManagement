@@ -12,13 +12,13 @@ public:
     Publisher();
     Publisher(const int publisherId, const string& publisherName, const string& address, const string& contactInfo);
     void setPublisherId(int publisherId);
-    int getPublisherId();
+    int getPublisherId() const;
     void setPublisherName(string publisherName);
-    string getPublisherName();
+    string getPublisherName() const;
     void setAddress(string address);
-    string getAddress();
+    string getAddress() const;
     void setContactInfo(string contactInfo);
-    string getContactInfo();
+    string getContactInfo() const;
 };
 
 #endif

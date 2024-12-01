@@ -22,13 +22,21 @@ public:
     BorrowReturn();
     BorrowReturn(int, int, int, Date,Date, int, Status);
     ~BorrowReturn();
-    Date getBorrowAt();
-    Date getReturnAt();
-    int getQuantity();
-    int getNumOfDays();
-    int getId();
-    Status getStatus();
-    void setStatus(Status);
+    Date getBorrowAt() const;
+    void setBorrowAt(Date);
+    Date getReturnAt() const;
+    void setReturnAt(Date);
+    int getQuantity() const;
+    void setQuantity(int);
+    int getNumOfDays() const;
     void setNumOfDays(int); 
+    int getId() const;
+    void setId(int);
+    Status getStatus() const;
+    void setStatus(Status);
+    int getUserId() const;
+    void setUserId(int);
+    int getBookId() const;
+    void setBookId(int);
 };  
 #endif

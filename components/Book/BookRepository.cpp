@@ -20,14 +20,13 @@ BookRepository* BookRepository::initBookRepository() {
 
 BookRepository::~BookRepository() {}
 
-void BookRepository::addBook(Book book) {
+void BookRepository::addBook(const Book& book) {
     ofstream outFile(_bookFileName, ios::app);
     if (!outFile.is_open()) {
         cerr << "Can't not open file to write" << endl;
         return;
     }
 
-    // Ghi dữ liệu theo định dạng `|`
     outFile << book.getBookId() << "|"
             << book.getCode() << "|"
             << book.getTitle() << "|"
@@ -40,7 +39,7 @@ void BookRepository::addBook(Book book) {
     cout << "Add book successful" << endl;
 }
 
-void BookRepository::updateBook(Book book) {
+void BookRepository::updateBook(const Book& book) {
     ifstream inFile(_bookFileName);
     ofstream tempFile(_bookTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {

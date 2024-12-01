@@ -10,6 +10,7 @@ List<string> Member::getPermissions() const {
     permissions.InsertLast("View Categories");
     permissions.InsertLast("View Authors");
     permissions.InsertLast("View Books");
+    permissions.InsertLast("View Authors");
     permissions.InsertLast("View Borrowed Books");
     permissions.InsertLast("Borrow Books"); 
     permissions.InsertLast("Return Books");

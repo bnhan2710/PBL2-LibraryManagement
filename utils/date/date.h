@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 using namespace std;
 class Date {
 private:
@@ -17,6 +18,7 @@ public:
     int getDay();
     int getMonth();
     int getYear();
+    string getFormattedDate();
     bool isLeapYear(int);
     int monthDays();
     void nextDay();

@@ -1,8 +1,4 @@
 #include "BorrowReturnService.h"
-enum Status {
-    BORROWING,
-    RETURNED
-};
 BorrowReturnService* BorrowReturnService::_borrowReturnService = nullptr;
 
 BorrowReturnService::BorrowReturnService() {
@@ -20,7 +16,7 @@ BorrowReturnService* BorrowReturnService::initBorrowReturnService() {
     return _borrowReturnService;
 }
 
-void BorrowReturnService::BorrowBook(int id, int userId, int bookId, int num_of_days, Date borrowAt, Date returnAt) {
+void BorrowReturnService::BorrowBook(int userId, int bookId, int num_of_days, Date borrowAt, Date returnAt) {
     int borrowReturnId = this->_borrowReturnList.GetLength() + 1;
     BorrowReturn borrowReturn(borrowReturnId, userId, bookId, borrowAt, returnAt, num_of_days, Status::BORROWING);
     this->_borrowReturnList.InsertLast(borrowReturn);
@@ -49,7 +45,18 @@ void BorrowReturnService::deleteBorrowReturn(int borrowReturnId) {
     cout << "Borrow return deleted successfully!" << endl;
 }
 
-List<BorrowReturn> BorrowReturnService::getAllBorrowList() {
-    return this->_borrowReturnList;
+List<BorrowReturn> BorrowReturnService::getBorrowList() {
+    return this->_borrowReturnRepository->getAllBorrowReturns();
+}
+
+List<BorrowReturn> BorrowReturnService::getBorrowList(int userId) {
+    List<BorrowReturn> allBorrowList = this->_borrowReturnRepository->getAllBorrowReturns();
+    List<BorrowReturn> borrowList;
+    for (int i = 0; i < allBorrowList.GetLength(); i++) {
+        if (allBorrowList[i].getUserId() == userId) {
+            borrowList.InsertLast(allBorrowList[i]);
+        }
+    }
+    return borrowList;
 }
 

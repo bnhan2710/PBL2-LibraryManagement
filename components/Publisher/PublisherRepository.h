@@ -14,8 +14,8 @@ private:
 public:
     static PublisherRepository *initPublisherRepository();
     ~PublisherRepository();
-    void addPublisher(Publisher publisher);
-    void updatePublisher(Publisher publisher);
+    void addPublisher(const Publisher& publisher);
+    void updatePublisher(const Publisher& publisher);
     void deletePublisher(int publisherId);
     Publisher getPublisherById(int publisherId);
     List<Publisher> getAllPublishers();

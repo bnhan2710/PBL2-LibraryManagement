@@ -27,22 +27,22 @@ public:
     ~Book();
 
     void setBookId(int bookId);
-    int getBookId();
+    int getBookId() const;
     
     void setTitle(string title);
-    string getTitle();
+    string getTitle() const;
     
     void setAuthor(string author);
-    string getAuthor();
+    string getAuthor() const;
 
     void setCategory(string category);
-    string getCategory();
+    string getCategory() const;
 
     void setPublisher(string publisher);
-    string getPublisher();
+    string getPublisher() const;
 
     void setCode(string code);
-    string getCode();
+    string getCode() const;
     /* void setAuthor(Author author); */
     /* Author getAuthor(); */
     
@@ -53,16 +53,16 @@ public:
     /* Publisher getPublisher(); */
 
     void setQuantity(int quantity);
-    int getQuantity();
+    int getQuantity() const;
     
     void setNumOfPages(int num_of_pages);
-    int getNumOfPages();
+    int getNumOfPages() const;
     
     void setPublisherId(int publisherId);
-    int getPublisherId();
+    int getPublisherId() const;
     
     void setCategoryId(int categoryId);
-    int getCategoryId();
+    int getCategoryId() const;
 
 };
 #endif

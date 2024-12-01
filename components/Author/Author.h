@@ -1,15 +1,8 @@
 #ifndef AUTHOR_H
 #define AUTHOR_H
 #include <string>
+#include "../utils/date/date.h"
 using namespace std;
-#ifndef DATE
-#define DATE
-struct Date {
-    int day;
-    int month;
-    int year;
-};
-#endif
 class Author {
 private:
     int authorId;
@@ -18,14 +11,14 @@ private:
     string authorInfo;
 public:
     Author();
-    Author(int authorId, string& authorName, Date& birthDate, string& authorInfo);
+    Author(int authorId, const string& authorName, const Date& birthDate, const string& authorInfo);
     void setAuthorId(int authorId);
-    int getAuthorId();
+    int getAuthorId() const;
     void setAuthorName(string authorName);
-    string getAuthorName();
+    string getAuthorName() const;
     void setBirthDate(Date birthDate);
-    Date getBirthDate();
+    Date getBirthDate() const;
     void setAuthorInfo(string authorInfo);
-    string getAuthorInfo();
+    string getAuthorInfo() const;
 };
 #endif

@@ -14,6 +14,8 @@
 #include "../Category/CategoryService.h"
 #include "../Publisher/Publisher.h"
 #include "../Publisher/PublisherService.h"
+#include "../BorrowReturn/BorrowReturnService.h"
+#include "../Author/AuthorService.h"
 #include "../../src/auth/auth.h"
 #include "../Role/Member.h"
 #include "../Role/Admin.h"
@@ -25,9 +27,12 @@ static const int windowHeight = 880;
 static const int loginWidth = 600;
 static const int loginHeight = 680;
 static int roleOfUser = -1;
+static int userId = -1;
 static Role* role = nullptr;
 static List<string> permissions;
 Font textFont, titleFont;
+Texture2D logo;
+Image icon;
 
 enum State {
     Menu,
@@ -797,7 +802,7 @@ class UI {
                 DrawRectangleRec(scrollBounds, BLACK);
         }
 
-        void DrawBookTable( BookService* bookService, float wheelMove,Vector2 mousePos, string searchBar = "search book") 
+        void DrawBookTable( BookService* bookService, BorrowReturnService* borrowReturnService, float wheelMove,Vector2 mousePos, string searchBar = "search book") 
         {
             List<class Book> bookList = bookService->getBook();
             int bookCount = bookList.GetLength();
@@ -992,6 +997,123 @@ class UI {
                     }
                     onDeleteOpen = false;
                 }
+                if ( permissions[i] == "Borrow Books" ) {
+                    if ( GuiButton(deleteBtnBounds, "Borrow Books") && idSelected > 0 ) {
+                        char *dayBorrow = new char[32]; 
+                        char *monthBorrow = new char[32];
+                        char *yearBorrow = new char[32];
+                        char *dayReturn = new char[32];
+                        char *monthReturn = new char[32];
+                        char *yearReturn = new char[32];
+                        bool dayBorrowEdit = false;
+                        bool monthBorrowEdit = false;
+                        bool yearBorrowEdit = false;
+                        bool dayReturnEdit = false;
+                        bool monthReturnEdit = false;
+                        bool yearReturnEdit = false;
+                        dayBorrow = strcpy(dayBorrow, "");
+                        monthBorrow = strcpy(monthBorrow, "");
+                        yearBorrow = strcpy(yearBorrow, "");
+                        dayReturn = strcpy(dayReturn, "");
+                        monthReturn = strcpy(monthReturn, "");
+                        yearReturn = strcpy(yearReturn, "");
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Borrow Book", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            DrawTextEx(titleFont, "Day Borrow", Vector2{textDivBounds.x + 100, textDivBounds.y + 150}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 220, 100, 40 }, "Day");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 150, textDivBounds.y + 220, 100, 40 }, dayBorrow, 64, dayBorrowEdit)) {
+                                dayBorrow = strcpy(dayBorrow, dayBorrow);
+                                dayBorrowEdit = !dayBorrowEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 300, textDivBounds.y + 220, 100, 40 }, "Month");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 360, textDivBounds.y + 220, 100, 40 }, monthBorrow, 64, monthBorrowEdit) ) {
+                                monthBorrow = strcpy(monthBorrow, monthBorrow);
+                                monthBorrowEdit = !monthBorrowEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 510, textDivBounds.y + 220, 100, 40 }, "Year");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 560, textDivBounds.y + 220, 100, 40 }, yearBorrow, 64, yearBorrowEdit) ) {
+                                yearBorrow = strcpy(yearBorrow, yearBorrow);
+                                yearBorrowEdit = !yearBorrowEdit;
+                            }
+                            DrawTextEx(titleFont, "Day Return", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 370, 100, 40 }, "Day");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 150, textDivBounds.y + 370, 100, 40 }, dayReturn, 64, dayReturnEdit) ) {
+                                dayReturn = strcpy(dayReturn, dayReturn);
+                                dayReturnEdit = !dayReturnEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 300, textDivBounds.y + 370, 100, 40 }, "Month");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 360, textDivBounds.y + 370, 100, 40 }, monthReturn, 64, monthReturnEdit) ) {
+                                monthReturn = strcpy(monthReturn, monthReturn);
+                                monthReturnEdit = !monthReturnEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 510, textDivBounds.y + 370, 100, 40 }, "Year");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 560, textDivBounds.y + 370, 100, 40 }, yearReturn, 64, yearReturnEdit) ) {
+                                yearReturn = strcpy(yearReturn, yearReturn);
+                                yearReturnEdit = !yearReturnEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 70, textDivBounds.y + 500, 150, 40 }, "Borrow") ) {
+                                int dayBorrowInt = atoi(dayBorrow);
+                                int monthBorrowInt = atoi(monthBorrow);
+                                int yearBorrowInt = atoi(yearBorrow);
+                                int dayReturnInt = atoi(dayReturn);
+                                int monthReturnInt = atoi(monthReturn);
+                                int yearReturnInt = atoi(yearReturn);
+                                int numDaysOfBorrow = 0;
+                                int numDaysOfReturn = 0;
+                                int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+                                int totalDays = 0;
+                                if ( monthBorrowInt > 12 || monthReturnInt > 12 || dayBorrowInt > 31 || dayReturnInt > 31 ) {
+                                    continue;
+                                }
+                                Date borrowDate = Date(dayBorrowInt, monthBorrowInt, yearBorrowInt);
+                                if ( dayBorrowInt > borrowDate.monthDays() ) {
+                                    continue;
+                                }
+                                Date returnDate = Date(dayReturnInt, monthReturnInt, yearReturnInt);
+                                if ( dayReturnInt > returnDate.monthDays() ) {
+                                    continue;
+                                }
+                                for ( int i = 0; i < yearBorrowInt; i++ ) {
+                                    numDaysOfBorrow += (i % 4 == 0 && i % 100 != 0) || (i % 400 == 0) ? 366 : 365; 
+                                }
+                                for ( int i = 0; i < yearReturnInt; i++ ) {
+                                    numDaysOfReturn += (i % 4 == 0 && i % 100 != 0) || (i % 400 == 0) ? 366 : 365; 
+                                }
+                                for ( int i = 0; i < monthBorrowInt - 1; i++ ) {
+                                    numDaysOfBorrow += daysInMonth[i];
+                                    if ( i == 1 && (yearBorrowInt % 4 == 0 && yearBorrowInt % 100 != 0) || (yearBorrowInt % 400 == 0) ) {
+                                        numDaysOfBorrow++;
+                                    }
+                                }
+                                for ( int i = 0; i < monthReturnInt - 1; i++ ) {
+                                    numDaysOfReturn += daysInMonth[i];
+                                    if ( i == 1 && (yearReturnInt % 4 == 0 && yearReturnInt % 100 != 0) || (yearReturnInt % 400 == 0) ) {
+                                        numDaysOfReturn++;
+                                    }
+                                }
+                                numDaysOfBorrow += dayBorrowInt;
+                                numDaysOfReturn += dayReturnInt;
+                                totalDays = numDaysOfReturn - numDaysOfBorrow;
+                                if ( totalDays < 0 ) {
+                                    continue;
+                                }
+                                borrowReturnService->BorrowBook( userId, idSelected, totalDays, borrowDate, returnDate);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            EndDrawing();
+                        }
+                    }
+                    onDeleteOpen = false;
+                }
             }
             int cnt = 0;
             DrawRectangleRec(tableBounds, LIGHTGRAY);
@@ -1099,9 +1221,456 @@ class UI {
             DrawRectangleRec(scrollBounds, BLACK);
         }
 
+        void DrawBorrowReturnTable( BorrowReturnService* borrowReturnService, UserService* userService, BookService* bookService, float wheelMove,Vector2 mousePos, string searchBar = "search") 
+        {
+            List<class BorrowReturn> borrowReturnList = roleOfUser == RoleOfUser::_Member ? borrowReturnService->getBorrowList(userId) : borrowReturnService->getBorrowList();
+            int borrowReturnCount = borrowReturnList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( borrowReturnCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            DrawTextEx(titleFont, "Borrow Return List", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
+            GuiTextBox( Rectangle{ textBoxBounds.x + 150, textBoxBounds.y, textBoxBounds.width, textBoxBounds.height }, text, 64, editMode);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    if ( strcmp(text, searchBar.c_str()) == 0 ) {
+                        text = strcpy(text, "");
+                    }
+                    editMode = !editMode;
+                } else {
+                    editMode = false;
+                    if ( strcmp(text, "") == 0 ) {
+                        text = strcpy(text, searchBar.c_str());
+                    } else {
+                        searchBar = string(text);
+                    }
+                }
+            }
+            for( int i = 0; i < permissions.GetLength(); i++ ) {
+                if ( permissions[i] == "Return Books" ) {
+                    if ( GuiButton(deleteBtnBounds, "Return Books") && idSelected > 0 ) { 
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(deleteTextDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Are you sure to return this book?", Vector2{textDivBounds.x + 150, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
+                                cout << idSelected << endl;
+                                borrowReturnService->ReturnBook(idSelected);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            EndDrawing();
+                        }
+                    }
+                    onDeleteOpen = false;
+                }
+            }
+            int cnt = 0;
+            DrawRectangleRec(tableBounds, LIGHTGRAY);
+            DrawTextEx(textFont, "ID", Vector2{tableBounds.x + 10, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Book Tite", Vector2{tableBounds.x + 100, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Username", Vector2{tableBounds.x + 300, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "BorrowDate", Vector2{tableBounds.x + 550, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "ReturnDate", Vector2{tableBounds.x + 750, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Day left", Vector2{tableBounds.x + 1000, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "status", Vector2{tableBounds.x + 1150, tableBounds.y + 10}, 20, 2, DARKGRAY);
+
+            if (wheelMove != 0.0 && wheelMove > 0 ||
+                (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y < 0)) {
+                scrollRenderTable += -1;
+                if (cnt > 0) {
+                    cnt--;
+                }
+            }
+            if (wheelMove != 0.0 && wheelMove < 0 ||
+                (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y > 0)) {
+                scrollRenderTable += 1;
+                if (cnt > 0) {
+                    cnt--;
+                }
+            }
+            if (scrollRenderTable >= borrowReturnCount - renderDefault + 1) {
+                scrollRenderTable = borrowReturnCount - renderDefault + 1;
+            }
+
+            if (scrollRenderTable < 0) {
+                scrollRenderTable = 0;
+                cnt = 0;
+            }
+            for (int i = scrollRenderTable; i < renderDefault + scrollRenderTable && i < borrowReturnCount; i++) {
+                Rectangle rowBounds = {tableBounds.x, tableBounds.y + (cnt + 1) * 30, tableBounds.width - 30, 30};
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    if (CheckCollisionPointRec(mousePos, rowBounds)) {
+                        if (rowSelected == i) {
+                            idSelected = -1;
+                            rowSelected = -1;
+                        } else {
+                            idSelected = borrowReturnList[i].getId();
+                            rowSelected = i;
+                        }
+                    } else if ( !CheckCollisionPointRec(mousePos, editBtnBounds) && !CheckCollisionPointRec(mousePos, deleteBtnBounds) ) {
+                        if (rowSelected == i) {
+                            idSelected = -1;
+                            rowSelected = -1;
+                        }
+                    }
+                }
+                if ( rowSelected != i ) {
+                    DrawRectangleRec(rowBounds, WHITE);
+                } else {
+                    DrawRectangleRec(rowBounds, GREEN);
+                }
+                string status = borrowReturnList[i].getStatus() == 0 ? "Borrowed" : "Returned";
+                DrawTextEx(textFont, TextFormat("%d", borrowReturnList[i].getId()),
+                        Vector2{rowBounds.x + 10, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, bookService->getBook( borrowReturnList[i].getBookId() )[0].getTitle().c_str(),
+                        Vector2{rowBounds.x + 100, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, userService->getUser( borrowReturnList[i].getUserId() )[0].getUsername().c_str(),
+                        Vector2{rowBounds.x + 300, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, borrowReturnList[i].getBorrowAt().getFormattedDate().c_str(),
+                        Vector2{ rowBounds.x + 550, rowBounds.y + 5, }, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, borrowReturnList[i].getReturnAt().getFormattedDate().c_str(),
+                        Vector2{rowBounds.x + 750, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, TextFormat("%d", borrowReturnList[i].getNumOfDays()),
+                        Vector2{rowBounds.x + 1000, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, status.c_str(),
+                        Vector2{rowBounds.x + 1150, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                ++cnt;
+            }
+            DrawRectangleRec(scrollMove, GRAY);
+            const int move = (int)((scrollMove.height - scrollHeight) / (borrowReturnCount - renderDefault));
+            int distMouseWithScroll = (mousePos.y - scrollMove.y);
+            if (wheelMove != 0.0 && wheelMove > 0 ||
+                (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y < 0)) {
+                scrollPosition += 1 * move;
+            }
+            if (wheelMove != 0.0 && wheelMove < 0 ||
+                (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y > 0)) {
+                scrollPosition += -1 * move;
+            }
+            float currentScrollY = (scrollMove.y - scrollPosition);
+            if (currentScrollY < scrollMove.y) {
+                scrollPosition -= 1 * move;
+                currentScrollY = scrollMove.y;
+            }
+            if (currentScrollY > fabs(scrollMove.y + scrollMove.height - scrollHeight)) {
+                scrollPosition -= -1 * move;
+                currentScrollY = fabs(scrollMove.y + scrollMove.height - scrollHeight);
+            }
+            scrollBounds.y = currentScrollY;
+            DrawRectangleRec(scrollBounds, BLACK);
+        }
+
+       
+        void DrawAuthorTable( AuthorService* authorService, float wheelMove,Vector2 mousePos, string searchBar = "search author") 
+        {
+            List<class Author> authorList = authorService->getAuthor();
+            int authorCount = authorList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( authorCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            DrawTextEx(titleFont, "Author", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
+            GuiTextBox(textBoxBounds, text, 64, editMode);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    if ( strcmp(text, searchBar.c_str()) == 0 ) {
+                        text = strcpy(text, "");
+                    }
+                    editMode = !editMode;
+                } else {
+                    editMode = false;
+                    if ( strcmp(text, "") == 0 ) {
+                        text = strcpy(text, searchBar.c_str());
+                    } else {
+                        searchBar = string(text);
+                    }
+                }
+            }
+            for( int i = 0; i < permissions.GetLength(); i++ ) {
+                if ( permissions[i] == "Manage Authors" ) {
+                    if( GuiButton(addBtnBounds, "Add Author") ) {
+                        char *_authorName = new char[32];
+                        char *_authorInfo = new char[32];
+                        char *day = new char[32];
+                        char *month = new char[32];
+                        char *year = new char[32];
+                        bool authorEdit = false;
+                        bool authorInfoEdit = false;
+                        bool dayEdit = false;
+                        bool monthEdit = false;
+                        bool yearEdit = false;
+                        _authorName = strcpy(_authorName, "");
+                        _authorInfo= strcpy(_authorInfo, "");
+                        day = strcpy(day, "");
+                        month = strcpy(month, "");
+                        year = strcpy(year, "");
+                        while (!onAddOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onAddOpen = !onAddOpen;
+                            }
+                            DrawTextEx(titleFont, "Add Author", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Author Name");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _authorName, 64, authorEdit)) {
+                                _authorName = strcpy(_authorName, _authorName);
+                                authorEdit = !authorEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 230, 250, 40 }, "AuthorInfo");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 230, 450, 40 }, _authorInfo, 64, authorInfoEdit) ) {
+                                _authorInfo = strcpy(_authorInfo, _authorInfo);
+                                authorInfoEdit = !authorInfoEdit;
+                            }
+                            DrawTextEx(titleFont, "Birth Date", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 370, 100, 40 }, "Day");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 150, textDivBounds.y + 370, 100, 40 }, day, 64, dayEdit) ) {
+                                day = strcpy(day, day);
+                                dayEdit = !dayEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 300, textDivBounds.y + 370, 100, 40 }, "Month");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 360, textDivBounds.y + 370, 100, 40 }, month, 64, monthEdit) ) {
+                                month = strcpy(month, month);
+                                monthEdit = !monthEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 510, textDivBounds.y + 370, 100, 40 }, "Year");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 560, textDivBounds.y + 370, 100, 40 }, year, 64, yearEdit) ) {
+                                year = strcpy(year, year);
+                                yearEdit = !yearEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
+                                string authorName = string(_authorName);
+                                string authorInfo = string(_authorInfo);
+                                int dayInt = atoi(day);
+                                int monthInt = atoi(month);
+                                int yearInt = atoi(year);
+                                Date birthDate = Date(dayInt, monthInt, yearInt);
+                                authorService->addAuthor(authorName, birthDate, authorInfo);
+                                onAddOpen = !onAddOpen;
+                            }
+                            EndDrawing();
+                        }
+                    }
+                    onAddOpen = false;
+                    if ( GuiButton(editBtnBounds, "Edit") && idSelected > 0 ) {
+                        char *_authorName = new char[32];
+                        char *_authorInfo = new char[32];
+                        char *day = new char[32];
+                        char *month = new char[32];
+                        char *year = new char[32];
+                        bool authorEdit = false;
+                        bool authorInfoEdit = false;
+                        bool dayEdit = false;
+                        bool monthEdit = false;
+                        bool yearEdit = false;
+                        int _day, _month, _year, cnt = 0;
+                        string birthDateStr = authorList[idSelected - 1].getBirthDate().getFormattedDate();
+                        _authorName = strcpy(_authorName, authorList[idSelected - 1].getAuthorName().c_str());
+                        _authorInfo = strcpy(_authorInfo, authorList[idSelected - 1].getAuthorInfo().c_str());
+                        for( int i = 0; i < birthDateStr.length(); i++ ) {
+                            if ( birthDateStr[i] == '-' && cnt == 0 ) {
+                                _day = atoi(birthDateStr.substr(0, i).c_str());
+                                cnt = i + 1;
+                            } else if ( birthDateStr[i] == '-' && cnt != 0 ) {
+                                _month = atoi(birthDateStr.substr(cnt, i).c_str());
+                                _year = atoi(birthDateStr.substr(i + 1, birthDateStr.length() - i).c_str());
+                            }
+                        }
+                        day = strcpy(day, to_string(_day).c_str());
+                        month = strcpy(month, to_string(_month).c_str());
+                        year = strcpy(year, to_string(_year).c_str());
+                        cnt = 0;
+                        while (!onAddOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(textDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onAddOpen = !onAddOpen;
+                            }
+                            DrawTextEx(titleFont, "Add Author", Vector2{textDivBounds.x + 320, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 150, 250, 40 }, "Author Name");
+                            if (GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 150, 450, 40 }, _authorName, 64, authorEdit)) {
+                                _authorName = strcpy(_authorName, _authorName);
+                                authorEdit = !authorEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 230, 250, 40 }, "AuthorInfo");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 250, textDivBounds.y + 230, 450, 40 }, _authorInfo, 64, authorInfoEdit) ) {
+                                _authorInfo = strcpy(_authorInfo, _authorInfo);
+                                authorInfoEdit = !authorInfoEdit;
+                            }
+                            DrawTextEx(titleFont, "Birth Date", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 36, 2, DARKGRAY);
+                            GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 370, 100, 40 }, "Day");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 150, textDivBounds.y + 370, 100, 40 }, day, 64, dayEdit) ) {
+                                day = strcpy(day, day);
+                                dayEdit = !dayEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 300, textDivBounds.y + 370, 100, 40 }, "Month");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 360, textDivBounds.y + 370, 100, 40 }, month, 64, monthEdit) ) {
+                                month = strcpy(month, month);
+                                monthEdit = !monthEdit;
+                            }
+                            GuiLabel(Rectangle{ textDivBounds.x + 510, textDivBounds.y + 370, 100, 40 }, "Year");
+                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 560, textDivBounds.y + 370, 100, 40 }, year, 64, yearEdit) ) {
+                                year = strcpy(year, year);
+                                yearEdit = !yearEdit;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Add") ) {
+                                string authorName = string(_authorName);
+                                string authorInfo = string(_authorInfo);
+                                int dayInt = atoi(day);
+                                int monthInt = atoi(month);
+                                int yearInt = atoi(year);
+                                Date birthDate = Date(dayInt, monthInt, yearInt);
+                                authorService->updateAuthor( idSelected, authorName, birthDate, authorInfo);
+                                onEditOpen = !onEditOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            EndDrawing();
+                        }
+                    }
+                    onEditOpen = false;
+                    if ( GuiButton(deleteBtnBounds, "Delete") && idSelected > 0 ) { 
+                        while (!onDeleteOpen)
+                        {
+                            BeginDrawing();
+                            ClearBackground(GRAY);
+                            DrawRectangleRec(deleteTextDivBounds, WHITE);
+                            if( GuiButton(closeDivBounds, "X") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            DrawTextEx(titleFont, "Are you sure to delete?", Vector2{textDivBounds.x + 250, textDivBounds.y + 50}, 36, 2, DARKGRAY);
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 200, textDivBounds.y + 250, 150, 40 }, "Yes") ) {
+                                authorService->deleteAuthor(idSelected);
+                                onDeleteOpen = !onDeleteOpen;
+                                idSelected = -1;
+                                rowSelected = -1;
+                            }
+                            if( GuiButton(Rectangle{ ( windowWidth / 2 ) + 100, textDivBounds.y + 250, 150, 40 }, "No") ) {
+                                onDeleteOpen = !onDeleteOpen;
+                            }
+                            EndDrawing();
+                        }
+                    }
+                    onDeleteOpen = false;
+                }
+            }
+            int cnt = 0;
+            DrawRectangleRec(tableBounds, LIGHTGRAY);
+            DrawTextEx(textFont, "ID", Vector2{tableBounds.x + 10, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Author Name", Vector2{tableBounds.x + 100, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Author Info", Vector2{tableBounds.x + 500, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "birthDate", Vector2{tableBounds.x + 900, tableBounds.y + 10}, 20, 2, DARKGRAY);
+
+            if (wheelMove != 0.0 && wheelMove > 0 ||
+                (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y < 0)) {
+                scrollRenderTable += -1;
+                if (cnt > 0) {
+                cnt--;
+                }
+            }
+            if (wheelMove != 0.0 && wheelMove < 0 ||
+                (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y > 0)) {
+                scrollRenderTable += 1;
+                if (cnt > 0) {
+                cnt--;
+                }
+            }
+            if (scrollRenderTable >= authorCount - renderDefault + 1) {
+                scrollRenderTable = authorCount - renderDefault + 1;
+            }
+
+            if (scrollRenderTable < 0) {
+                scrollRenderTable = 0;
+                cnt = 0;
+            }
+            for (int i = scrollRenderTable; i < renderDefault + scrollRenderTable && i < authorCount; i++) {
+                Rectangle rowBounds = {tableBounds.x, tableBounds.y + (cnt + 1) * 30, tableBounds.width - 30, 30};
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    if (CheckCollisionPointRec(mousePos, rowBounds)) {
+                        if (rowSelected == i) {
+                            idSelected = -1;
+                            rowSelected = -1;
+                        } else {
+                            idSelected = authorList[i].getAuthorId();
+                            rowSelected = i;
+                        }
+                    } else if ( !CheckCollisionPointRec(mousePos, editBtnBounds) && !CheckCollisionPointRec(mousePos, deleteBtnBounds) ) {
+                        if (rowSelected == i) {
+                            idSelected = -1;
+                            rowSelected = -1;
+                        }
+                    }
+                }
+                if ( authorList[i].getAuthorName() == "0" && authorList[i].getAuthorInfo() == "0" ) {
+                    continue;
+                }
+                if ( rowSelected != i ) {
+                    DrawRectangleRec(rowBounds, WHITE);
+                } else {
+                    DrawRectangleRec(rowBounds, GREEN);
+                }
+                DrawTextEx(textFont, TextFormat("%d", authorList[i].getAuthorId()),
+                        Vector2{rowBounds.x + 10, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, authorList[i].getAuthorName().c_str(),
+                        Vector2{rowBounds.x + 100, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, authorList[i].getAuthorInfo().c_str(),
+                        Vector2{
+                            rowBounds.x + 500,
+                            rowBounds.y + 5,
+                        },
+                        20, 2, DARKGRAY);
+                DrawTextEx(textFont, authorList[i].getBirthDate().getFormattedDate().c_str(),
+                        Vector2{rowBounds.x + 900, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                ++cnt;
+            }
+                DrawRectangleRec(scrollMove, GRAY);
+                int move = (int)((scrollMove.height - scrollHeight) /
+                                (authorCount - renderDefault));
+                int distMouseWithScroll = (mousePos.y - scrollMove.y);
+                if (wheelMove != 0.0 && wheelMove > 0 ||
+                    (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                    IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y < 0)) {
+                    scrollPosition += 1 * move;
+                }
+                if (wheelMove != 0.0 && wheelMove < 0 ||
+                    (CheckCollisionPointRec(mousePos, scrollBounds) &&
+                    IsMouseButtonDown(MOUSE_BUTTON_LEFT) && GetMouseDelta().y > 0)) {
+                    scrollPosition += -1 * move;
+                }
+                float currentScrollY = (scrollMove.y - scrollPosition);
+                if (currentScrollY < scrollMove.y) {
+                    scrollPosition -= 1 * move;
+                    currentScrollY = scrollMove.y;
+                }
+                if (currentScrollY > fabs(scrollMove.y + scrollMove.height - scrollHeight)) {
+                    scrollPosition -= -1 * move;
+                    currentScrollY = fabs(scrollMove.y + scrollMove.height - scrollHeight);
+                }
+                scrollBounds.y = currentScrollY;
+                DrawRectangleRec(scrollBounds, BLACK);
+        }
+
         void LoadText() {
             textFont = LoadFontEx("components/UI_Console/font/times.ttf", 20, 0, 0);
             titleFont = LoadFontEx("components/UI_Console/font/times.ttf", 40, 0, 0);
+            icon = LoadImage("components/UI_Console/logo.png");
+            logo = LoadTextureFromImage(icon);
+            UnloadImage(icon);
             GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
             GuiSetFont(textFont);
         }
@@ -1156,6 +1725,7 @@ class UI {
                     for (int i = 0; i < userList.GetLength(); i++) {
                         TraceLog(LOG_INFO, "Id: %d Username: %s, Password: %s Email: %s Phone: %s Role: %s", userList[i].getUserId() , userList[i].getUsername().c_str(), userList[i].getPassword().c_str(), userList[i].getEmail().c_str(), userList[i].getPhone().c_str(), userList[i].getRole()->getRoleName().c_str()); 
                         if ( userList[i].getUsername() == _username && userList[i].getPassword() == _password ) {
+                            userId = userList[i].getUserId();
                             if ( userList[i].getRole()->getRoleName() == "Admin" ) {
                                 roleOfUser = RoleOfUser::_Admin;
                             } else if ( userList[i].getRole()->getRoleName() == "Librarian" ) {
@@ -1238,6 +1808,7 @@ class UI {
         }
 
         State DrawAdminFunctionBar() {
+            DrawTextureEx(logo, Vector2{ (int)(windowWidth / 2) - 40, 30 }, 0.0f, 0.5f, WHITE);
             DrawTextEx(titleFont, "MENU", Vector2{ ( windowWidth / 2 ) - 50, 150 }, 40, 2, DARKGRAY);
             if (GuiButton(Rectangle{(int)(windowWidth / 2) - 400, 300, 200, 75}, "User")) {
                 scrollPosition = 0;
@@ -1263,8 +1834,18 @@ class UI {
                 text = strcpy(text, "search book");
                 return State::Book;
             }
-            GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Borrow Return");
-            GuiButton(Rectangle{ (int)(windowWidth / 2) + 200, 450, 200, 75 }, "Author");
+            if ( GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Borrow Return") ) {
+                scrollPosition = 0;
+                scrollRenderTable = 0;
+                text = strcpy(text, "search borrow return");
+                return State::BorrowReturn;
+            }
+            if (GuiButton(Rectangle{ (int)(windowWidth / 2) + 200, 450, 200, 75 }, "Author")) {
+                scrollPosition = 0;
+                scrollRenderTable = 0;
+                text = strcpy(text, "search author");
+                return State::Author;
+            }
             if( GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 600, 200, 75 }, "Exit") ) { 
                 return State::Exit;
             }
@@ -1291,8 +1872,18 @@ class UI {
                 text = strcpy(text, "search book");
                 return State::Book;
             }
-            GuiButton(Rectangle{ (int)(windowWidth / 2) - 400, 450, 200, 75 }, "Borrow Return");
-            GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Author");
+            if ( GuiButton(Rectangle{ (int)(windowWidth / 2) - 400, 450, 200, 75 }, "Borrow Return") ) {
+                scrollPosition = 0;
+                scrollRenderTable = 0;
+                text = strcpy(text, "search borrow return");
+                return State::BorrowReturn;
+            }
+            if (GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Author")) {
+                scrollPosition = 0;
+                scrollRenderTable = 0;
+                text = strcpy(text, "search author");
+                return State::Author;
+            }
             if( GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 600, 200, 75 }, "Exit") ) { 
                 return State::Exit;
             }
@@ -1319,8 +1910,18 @@ class UI {
                 text = strcpy(text, "search book");
                 return State::Book;
             }
-            GuiButton(Rectangle{ (int)(windowWidth / 2) - 400, 450, 200, 75 }, "Borrow Return");
-            GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Author");
+            if (GuiButton(Rectangle{ (int)(windowWidth / 2) - 400, 450, 200, 75 }, "Borrow Return")) {
+                scrollPosition = 0;
+                scrollRenderTable = 0;
+                text = strcpy(text, "search borrow return");
+                return State::BorrowReturn;
+            }
+            if (GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Author")) {
+                scrollPosition = 0;
+                scrollRenderTable = 0;
+                text = strcpy(text, "search author");
+                return State::Author;
+            }
             if( GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 600, 200, 75 }, "Exit") ) { 
                 return State::Exit;
             }
@@ -1330,6 +1931,7 @@ class UI {
         void End() {
             onAddOpen = false;
             onEditOpen = false;
+            UnloadImage(icon);
             UnloadFont(textFont);
             UnloadFont(titleFont);
         }

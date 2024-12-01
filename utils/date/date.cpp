@@ -39,6 +39,10 @@ int Date::getYear(){
     return this->year;
 }
 
+string Date::getFormattedDate(){
+    return to_string(this->day) + "-" + to_string(this->month) + "-" + to_string(this->year);
+}
+
 bool Date::isLeapYear(int year){
     if(year % 4 == 0){
         if(year % 100 == 0){

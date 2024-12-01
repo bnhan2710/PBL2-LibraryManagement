@@ -33,7 +33,7 @@ void Book::setBookId(int bookId){
     this->bookId = bookId;
 }
 
-int Book::getBookId(){
+int Book::getBookId() const {
     return this->bookId;
 }
 
@@ -41,7 +41,7 @@ void Book::setTitle(string title){
     this->title = title;
 }
 
-string Book::getTitle(){
+string Book::getTitle() const {
     return this->title;
 }
 
@@ -49,7 +49,7 @@ string Book::getTitle(){
 /*     this->author = author; */
 /* } */
 
-/* Author Book::getAuthor(){ */
+/* Author Book::getAuthor() const { */
 /*     return this->author; */
 /* } */
 
@@ -57,7 +57,7 @@ string Book::getTitle(){
 /*     this->category = category; */
 /* } */
 
-/* Category Book::getCategory(){ */
+/* Category Book::getCategory() const { */
 /*     return this->category; */
 /* } */
 
@@ -65,7 +65,7 @@ string Book::getTitle(){
 /*     this->publisher = publisher; */
 /* } */
 
-/* Publisher Book::getPublisher(){ */
+/* Publisher Book::getPublisher() const { */
 /*     return this->publisher; */
 /* } */
 
@@ -73,7 +73,7 @@ void Book::setAuthor(string author){
     this->author = author;
 }
 
-string Book::getAuthor(){
+string Book::getAuthor() const {
     return this->author;
 }
 
@@ -81,7 +81,7 @@ void Book::setPublisher(string publisher){
     this->publisher = publisher;
 }
 
-string Book::getPublisher(){
+string Book::getPublisher() const {
     return this->publisher;
 }
 
@@ -89,7 +89,7 @@ void Book::setCategory(string category){
     this->category = category;
 }
 
-string Book::getCategory(){
+string Book::getCategory() const {
     return this->category;
 }
 
@@ -97,7 +97,7 @@ void Book::setCode(string code){
     this->code = code;
 }
 
-string Book::getCode(){
+string Book::getCode() const {
     return this->code;
 }
 
@@ -105,7 +105,7 @@ void Book::setQuantity(int quantity){
     this->quantity = quantity;
 }
 
-int Book::getQuantity(){
+int Book::getQuantity() const {
     return this->quantity;
 }
 
@@ -113,7 +113,7 @@ void Book::setNumOfPages(int num_of_pages){
     this->num_of_pages = num_of_pages;
 }
 
-int Book::getNumOfPages(){
+int Book::getNumOfPages() const {
     return this->num_of_pages;
 }
 
@@ -121,7 +121,7 @@ void Book::setPublisherId(int publisherId){
     this->publisherId = publisherId;
 }
 
-int Book::getPublisherId(){
+int Book::getPublisherId() const {
     return this->publisherId;
 }
 
@@ -129,7 +129,7 @@ void Book::setCategoryId(int categoryId){
     this->categoryId = categoryId;
 }
 
-int Book::getCategoryId(){
+int Book::getCategoryId() const {
     return this->categoryId;
 }
 

@@ -29,3 +29,4 @@
 29|TR66|TalesOfRevolution|history|GeorgeOrwell|RebelWriters|10
 30|TH54|TheHealingPower|self-help|DeepakChopra|WellnessBooks|18
 31|12|ki_thuat_lap_trinh|thay|shoujo|cuong|20
+32|VN123|genshin impact|van cuong|bao nhan|shoujo|10

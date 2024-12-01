@@ -14,8 +14,8 @@ private:
 public:
     static BookRepository *initBookRepository();
     ~BookRepository();
-    void addBook(Book book);
-    void updateBook(Book book);
+    void addBook(const Book& book);
+    void updateBook(const Book& book);
     void deleteBook(int bookId);
     Book getBookById(int bookId);
     List<Book> getAllBooks();

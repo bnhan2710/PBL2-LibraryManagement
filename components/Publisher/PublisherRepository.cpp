@@ -20,14 +20,13 @@ PublisherRepository* PublisherRepository::initPublisherRepository() {
 
 PublisherRepository::~PublisherRepository() {}
 
-void PublisherRepository::addPublisher(Publisher publisher) {
+void PublisherRepository::addPublisher(const Publisher& publisher) {
     ofstream outFile(_publisherFileName, ios::app);
     if (!outFile.is_open()) {
         cerr << "Can't not open file to write" << endl;
         return;
     }
 
-    // Ghi dữ liệu theo định dạng phân cách bằng `|`
     outFile << publisher.getPublisherId() << "|"
             << publisher.getPublisherName() << "|"
             << publisher.getAddress() << "|"
@@ -37,7 +36,7 @@ void PublisherRepository::addPublisher(Publisher publisher) {
     cout << "Add publisher successful" << endl;
 }
 
-void PublisherRepository::updatePublisher(Publisher publisher) {
+void PublisherRepository::updatePublisher(const Publisher& publisher) {
     ifstream inFile(_publisherFileName);
     ofstream tempFile(_publisherTempFileName, ios::out);
     if (!inFile.is_open() || !tempFile.is_open()) {

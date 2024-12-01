@@ -15,8 +15,8 @@ private:
 public:
     static CategoryRepository *initCategoryRepository();
     ~CategoryRepository();
-    void addCategory(Category category);
-    void updateCategory(Category category);
+    void addCategory(const Category& category);
+    void updateCategory(const Category& category);
     void deleteCategory(int categoryId);
     Category getCategoryById(int categoryId);
     List<Category> getAllCategories();

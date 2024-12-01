@@ -1,8 +1,4 @@
 #include "BorrowReturn.h"
-enum Status {
-    BORROWED,
-    RETURNED
-};
 
 BorrowReturn::BorrowReturn(){
 }
@@ -14,10 +10,10 @@ BorrowReturn::~BorrowReturn(){
 
 }
 
-Date BorrowReturn::getBorrowAt(){
+Date BorrowReturn::getBorrowAt() const {
     return this->borrowAt;
 }
-Date BorrowReturn::getReturnAt(){
+Date BorrowReturn::getReturnAt() const {
     Date returnAt = this->borrowAt;
     for(int i = 0; i < this->num_of_days; i++){
         returnAt.nextDay();
@@ -25,16 +21,31 @@ Date BorrowReturn::getReturnAt(){
     return returnAt;
 }
 
+void BorrowReturn::setBorrowAt(Date borrowAt){
+    this->borrowAt = borrowAt;
+}
 
-int BorrowReturn::getNumOfDays(){
+void BorrowReturn::setReturnAt(Date returnAt){
+    this->returnAt = returnAt;
+}
+
+int BorrowReturn::getNumOfDays() const {
     return this->num_of_days;
 }
 
-int BorrowReturn::getId(){
+void BorrowReturn::setNumOfDays(int num_of_days){
+    this->num_of_days = num_of_days;
+}
+
+int BorrowReturn::getId() const {
     return this->id;
 }
 
-Status BorrowReturn::getStatus(){
+void BorrowReturn::setId(int id){
+    this->id = id;
+}
+
+Status BorrowReturn::getStatus() const {
     return this->status;
 }
 
@@ -42,7 +53,18 @@ void BorrowReturn::setStatus(Status status){
     this->status = status;
 }
 
-void BorrowReturn::setNumOfDays(int num_of_days){
-    this->num_of_days = num_of_days;
+int BorrowReturn::getUserId() const {
+    return this->userId;
 }
 
+void BorrowReturn::setUserId(int userId){
+    this->userId = userId;
+}
+
+int BorrowReturn::getBookId() const {
+    return this->bookId;
+}
+
+void BorrowReturn::setBookId(int bookId){
+    this->bookId = bookId;
+}

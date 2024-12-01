@@ -10,8 +10,8 @@ public:
     Category();
     Category(int categoryId,const string& categoryName);
     void setCategoryId(int categoryId);
-    int getCategoryId();
+    int getCategoryId() const;
     void setCategoryName(string categoryName);
-    string getCategoryName();
+    string getCategoryName() const;
 };
 #endif

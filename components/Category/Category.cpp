@@ -14,7 +14,7 @@ void Category::setCategoryId(int categoryId) {
     this->categoryId = categoryId;
 }
 
-int Category::getCategoryId() {
+int Category::getCategoryId() const {
     return this->categoryId;
 }
 
@@ -22,6 +22,6 @@ void Category::setCategoryName(string categoryName) {
     this->categoryName = categoryName;
 }
 
-string Category::getCategoryName() {
+string Category::getCategoryName() const {
     return this->categoryName;
 }
