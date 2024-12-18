@@ -1529,7 +1529,7 @@ class UI {
                         }
                         break;
                     case 5:
-                        if ( searchList[i].getStatus() == 0 && toLower(toLower("Borrowed")).find(toLower(searchBar)) != -1 ) {
+                        if ( searchList[i].getStatus() == 0 && toLower("Borrowed").find(toLower(searchBar)) != -1 ) {
                             borrowReturnList.PushBack(searchList[i]);
                         } else if ( searchList[i].getStatus() == 1 && toLower("Returned").find(toLower(searchBar)) != -1) {
                             borrowReturnList.PushBack(searchList[i]);
