@@ -22,6 +22,7 @@ public:
     void Remove(int);
     void InsertFirst(T);
     void InsertLast(T);
+    void PushBack(T value);
 };
 
 template<typename T>
@@ -146,4 +147,24 @@ void List<T>::Remove(int index)
     delete[] this->data;
     this->data = data;
     --this->length;
+}
+template<typename T>
+void List<T>::PushBack(T value)
+{
+    if ( this->length == 0)
+    {
+        this->data = new T[1];
+        this->data[0] = value;
+        this->length = 1;
+    }
+    else
+    {
+        T* data = new T[this->length + 1];
+        for (int i = 0; i < this->length; ++i)
+            data[i] = (*this)[i];
+        data[this->length] = value;
+        delete[] this->data;
+        this->data = data;
+        ++this->length;
+    }
 }

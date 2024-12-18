@@ -5,21 +5,7 @@
 Book::Book(){
 }
 
-/* Book::Book(int bookId, string title, Author author, int quantity, int num_of_pages, int publisherId, int categoryId){ */
-/*     this->bookId = bookId; */
-/*     this->title = title; */
-/*     this->author = author; */
-/*     this->quantity = quantity; */
-/*     this->num_of_pages = num_of_pages; */
-/*     this->publisherId = publisherId; */
-/*     this->categoryId = categoryId; */
-/* } */
-
-Book::~Book(){
-
-}
-
-Book::Book(int bookId, string code, string title, string author, string category, string publisher, int quantity){
+Book::Book(int bookId, string code, string title, Author& author, Category& category, Publisher& publisher, int quantity){
     this->bookId = bookId;
     this->code = code;
     this->title = title;
@@ -27,7 +13,23 @@ Book::Book(int bookId, string code, string title, string author, string category
     this->category = category;
     this->publisher = publisher;
     this->quantity = quantity;
+    this->publisherId = publisher.getPublisherId();
+    this->categoryId = category.getCategoryId();
 }
+
+Book::~Book(){
+
+}
+
+/* Book::Book(int bookId, string code, string title, string author, string category, string publisher, int quantity){ */
+/*     this->bookId = bookId; */
+/*     this->code = code; */
+/*     this->title = title; */
+/*     this->author = author; */
+/*     this->category = category; */
+/*     this->publisher = publisher; */
+/*     this->quantity = quantity; */
+/* } */
 
 void Book::setBookId(int bookId){
     this->bookId = bookId;
@@ -45,53 +47,53 @@ string Book::getTitle() const {
     return this->title;
 }
 
-/* void Book::setAuthor(Author author){ */
-/*     this->author = author; */
-/* } */
-
-/* Author Book::getAuthor() const { */
-/*     return this->author; */
-/* } */
-
-/* void Book::setCategory(Category category){ */
-/*     this->category = category; */
-/* } */
-
-/* Category Book::getCategory() const { */
-/*     return this->category; */
-/* } */
-
-/* void Book::setPublisher(Publisher publisher){ */
-/*     this->publisher = publisher; */
-/* } */
-
-/* Publisher Book::getPublisher() const { */
-/*     return this->publisher; */
-/* } */
-
-void Book::setAuthor(string author){
+void Book::setAuthor(Author& author){
     this->author = author;
 }
 
-string Book::getAuthor() const {
+Author Book::getAuthor() const {
     return this->author;
 }
 
-void Book::setPublisher(string publisher){
-    this->publisher = publisher;
-}
-
-string Book::getPublisher() const {
-    return this->publisher;
-}
-
-void Book::setCategory(string category){
+void Book::setCategory(Category& category){
     this->category = category;
 }
 
-string Book::getCategory() const {
+Category Book::getCategory() const {
     return this->category;
 }
+
+void Book::setPublisher(Publisher& publisher){
+    this->publisher = publisher;
+}
+
+Publisher Book::getPublisher() const {
+    return this->publisher;
+}
+
+/* void Book::setAuthor(string author){ */
+/*     this->author = author; */
+/* } */
+
+/* string Book::getAuthor() const { */
+/*     return this->author; */
+/* } */
+
+/* void Book::setPublisher(string publisher){ */
+/*     this->publisher = publisher; */
+/* } */
+
+/* string Book::getPublisher() const { */
+/*     return this->publisher; */
+/* } */
+
+/* void Book::setCategory(string category){ */
+/*     this->category = category; */
+/* } */
+
+/* string Book::getCategory() const { */
+/*     return this->category; */
+/* } */
 
 void Book::setCode(string code){
     this->code = code;

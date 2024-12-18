@@ -5,6 +5,8 @@
 #include <cstring>
 #include <string>
 #include <cmath>
+#include <algorithm>
+#include <cctype>
 #include "../User/User.h"
 #include "../../utils/List.h"
 #include "../User/UserService.h"
@@ -59,13 +61,16 @@ class UI {
         bool onDeleteOpen = false;
         int rowSelected = -1;
         int idSelected = -1;
+        int searchSelected = 0;
+        bool searchEdit = false;
+        bool searchProcess = false;
         const int renderDefault = 20;
         int scrollPosition = 0;
         int scrollRenderTable = 0;
         Rectangle tableBounds = { 50, 150, 1300, (float)(30 + renderDefault * 30 )};
         Rectangle scrollMove = { tableBounds.x + tableBounds.width - 30, tableBounds.y + 30, 30, tableBounds.height - 30 };
         Rectangle functionBarBounds = { 0, 0, 300, windowHeight };
-        Rectangle textBoxBounds = { tableBounds.x + 150, tableBounds.y - 50, 400, 40 };
+        Rectangle textBoxBounds = { tableBounds.x + 150, tableBounds.y - 50, 300, 40 };
         Rectangle addBtnBounds = { tableBounds.x + 590, tableBounds.y - 50, 150, 40 };
         Rectangle editBtnBounds = { tableBounds.x + 770, tableBounds.y - 50, 150, 40 };
         Rectangle deleteBtnBounds = { tableBounds.x + 950, tableBounds.y - 50, 150, 40 };
@@ -73,16 +78,24 @@ class UI {
         Rectangle deleteTextDivBounds = { tableBounds.x + 250, tableBounds.y, 800, 350 };
         Rectangle closeDivBounds = { textDivBounds.x + textDivBounds.width - 80, textDivBounds.y + 20, 50, 40 };
     public:
+        string toLower(string str) {
+            transform(str.begin(), str.end(), str.begin(), ::tolower);
+            return str;
+        }
         void DrawUserTable( UserService* userService, float wheelMove,Vector2 mousePos, string searchBar = "search user") 
         {
-            List<class User> userList = userService->getUser();
-            int userCount = userList.GetLength();
-            const float scrollHeight = scrollMove.height - ( 30 * (int)( userCount / ( renderDefault + 1 ) ) );
-            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            List<class User> userList;
+            List<class User> searchList = userService->getUser();
+            if ( !searchProcess ) {
+                userList = userService->getUser();
+            }
+            const char* searchOptions = "Username;Email;Role";
             DrawTextEx(titleFont, "User List", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
             GuiTextBox(textBoxBounds, text, 64, editMode);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    searchProcess = true;
+                    userList.Erase();
                     if ( strcmp(text, searchBar.c_str()) == 0 ) {
                         text = strcpy(text, "");
                     }
@@ -91,11 +104,36 @@ class UI {
                     editMode = false;
                     if ( strcmp(text, "") == 0 ) {
                         text = strcpy(text, searchBar.c_str());
-                    } else {
-                        searchBar = string(text);
-                    }
+                        searchProcess = false;
+                        userList = searchList;
+                    } 
                 }
             }
+            searchBar = string(text);
+             for( int i = 0; i < searchList.GetLength(); i++ ) {
+                    switch ( searchSelected ) {
+                        case 0:
+                            if ( toLower(searchList[i].getUsername()).find(toLower(searchBar)) != -1 ) {
+                                userList.PushBack(searchList[i]);
+                            }
+                            break;
+                        case 1:
+                            if ( toLower(searchList[i].getEmail()).find(toLower(searchBar)) != -1 ) {
+                                userList.PushBack(searchList[i]);
+                            }
+                            break;
+                        case 2:
+                            if ( toLower(searchList[i].getRole()->getRoleName()).find(toLower(searchBar)) != -1 ) {
+                                userList.PushBack(searchList[i]);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            int userCount = userList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( userCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
             for( int i = 0; i < permissions.GetLength(); i++ ) {
                 if ( permissions[i] == "Manage Users" ) {
                     if( GuiButton(addBtnBounds, "Add new User") ) {
@@ -365,18 +403,25 @@ class UI {
             }
             scrollBounds.y = currentScrollY;
             DrawRectangleRec(scrollBounds, BLACK);
+            if ( GuiDropdownBox(Rectangle{ textBoxBounds.x + 300, textBoxBounds.y, 120, textBoxBounds.height }, searchOptions, &searchSelected, searchEdit) ) {
+                searchEdit = !searchEdit;
+            }
         }
             
         void DrawCategoryTable( CategoryService* categoryService, float wheelMove,Vector2 mousePos, string searchBar = "search category") 
         {  
-            List<class Category> categoryList = categoryService->getCategory();
-            int categoryCount = categoryList.GetLength();
-            const float scrollHeight = scrollMove.height - ( 30 * (int)( categoryCount / ( renderDefault + 1 ) ) );
-            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            List<class Category> categoryList;
+            List<class Category> searchList = categoryService->getCategory();
+            if ( !searchProcess ) {
+                categoryList = categoryService->getCategory();
+            }
+            const char* searchOptions = "CategoryName";
             DrawTextEx(titleFont, "Category", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
             GuiTextBox(textBoxBounds, text, 64, editMode);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    searchProcess = true;
+                    categoryList.Erase();
                     if ( strcmp(text, searchBar.c_str()) == 0 ) {
                         text = strcpy(text, "");
                     }
@@ -385,11 +430,20 @@ class UI {
                     editMode = false;
                     if ( strcmp(text, "") == 0 ) {
                         text = strcpy(text, searchBar.c_str());
-                    } else {
-                        searchBar = string(text);
+                        searchProcess = false;
+                        categoryList = searchList;
                     }
                 }
             }
+            searchBar = string(text);
+            for( int i = 0; i < searchList.GetLength(); i++ ) {
+                if ( toLower(searchList[i].getCategoryName()).find(toLower(searchBar)) != -1 ) {
+                    categoryList.PushBack(searchList[i]);
+                }
+            }
+            int categoryCount = categoryList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( categoryCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
             for( int i = 0; i < permissions.GetLength(); i++ ) {
                 if ( permissions[i] == "Manage Categories" ) {
                     if( GuiButton(addBtnBounds, "Add Category") ) {
@@ -560,18 +614,25 @@ class UI {
             }
             scrollBounds.y = currentScrollY;
             DrawRectangleRec(scrollBounds, BLACK);
+            if ( GuiDropdownBox(Rectangle{ textBoxBounds.x + 300, textBoxBounds.y, 120, textBoxBounds.height }, searchOptions, &searchSelected, searchEdit) ) {
+                searchEdit = !searchEdit;
+            }
         }
 
         void DrawPublisherTable( PublisherService* publisherService, float wheelMove,Vector2 mousePos, string searchBar = "search publisher") 
         {
-            List<class Publisher> publisherList = publisherService->getPublisher();
-            int publisherCount = publisherList.GetLength();
-            const float scrollHeight = scrollMove.height - ( 30 * (int)( publisherCount / ( renderDefault + 1 ) ) );
-            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            List<class Publisher> publisherList;
+            List<class Publisher> searchList = publisherService->getPublisher();
+            if ( !searchProcess ) {
+                publisherList = publisherService->getPublisher();
+            }
+            const char* searchOptions = "PublisherName;Address;ContactInfo";
             DrawTextEx(titleFont, "Publisher", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
             GuiTextBox(textBoxBounds, text, 64, editMode);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    searchProcess = true;
+                    publisherList.Erase();
                     if ( strcmp(text, searchBar.c_str()) == 0 ) {
                         text = strcpy(text, "");
                     }
@@ -580,11 +641,36 @@ class UI {
                     editMode = false;
                     if ( strcmp(text, "") == 0 ) {
                         text = strcpy(text, searchBar.c_str());
-                    } else {
-                        searchBar = string(text);
+                        searchProcess = false;
+                        publisherList = searchList;
                     }
                 }
             }
+            searchBar = string(text);
+            for( int i = 0; i < searchList.GetLength(); i++ ) {
+                switch ( searchSelected ) {
+                    case 0:
+                        if ( toLower(searchList[i].getPublisherName()).find(toLower(searchBar)) != -1 ) {
+                            publisherList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 1:
+                        if ( toLower(searchList[i].getAddress()).find(toLower(searchBar)) != -1 ) {
+                            publisherList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 2:
+                        if ( toLower(searchList[i].getContactInfo()).find(toLower(searchBar)) != -1 ) {
+                            publisherList.PushBack(searchList[i]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            int publisherCount = publisherList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( publisherCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
             for( int i = 0; i < permissions.GetLength(); i++ ) {
                 if ( permissions[i] == "Manage Publishers" ) {
                     if( GuiButton(addBtnBounds, "Add Publisher") ) {
@@ -800,18 +886,45 @@ class UI {
                 }
                 scrollBounds.y = currentScrollY;
                 DrawRectangleRec(scrollBounds, BLACK);
+                if ( GuiDropdownBox(Rectangle{ textBoxBounds.x + 300, textBoxBounds.y, 120, textBoxBounds.height }, searchOptions, &searchSelected, searchEdit) ) {
+                    searchEdit = !searchEdit;
+                }
         }
 
-        void DrawBookTable( BookService* bookService, BorrowReturnService* borrowReturnService, float wheelMove,Vector2 mousePos, string searchBar = "search book") 
+        void DrawBookTable( BookService* bookService, BorrowReturnService* borrowReturnService, AuthorService* authorService, CategoryService* categoryService, PublisherService* publisherService,float wheelMove,Vector2 mousePos, string searchBar = "search book") 
         {
-            List<class Book> bookList = bookService->getBook();
-            int bookCount = bookList.GetLength();
-            const float scrollHeight = scrollMove.height - ( 30 * (int)( bookCount / ( renderDefault + 1 ) ) );
-            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            List<class Book> bookList;
+            List<class Book> searchList = bookService->getBook();
+            if ( !searchProcess ) {
+                bookList = bookService->getBook();
+            }
+            List<class Author> authorList = authorService->getAuthor();
+            List<class Category> categoryList = categoryService->getCategory();
+            List<class Publisher> publisherList = publisherService->getPublisher();
+            const char* searchOptions = "Title;Code;Author;Category;Publisher";
+            for (int i = 0; i < bookList.GetLength(); i++) {
+                for (int j = 0; j < authorList.GetLength(); j++) {
+                    if (bookList[i].getAuthor().getAuthorId() == authorList[j].getAuthorId()) {
+                        bookList[i].setAuthor(authorList[j]);
+                    }
+                }
+                for (int j = 0; j < categoryList.GetLength(); j++) {
+                    if (bookList[i].getCategory().getCategoryId() == categoryList[j].getCategoryId()) {
+                        bookList[i].setCategory(categoryList[j]);
+                    }
+                }
+                for (int j = 0; j < publisherList.GetLength(); j++) {
+                    if (bookList[i].getPublisher().getPublisherId() == publisherList[j].getPublisherId()) {
+                        bookList[i].setPublisher(publisherList[j]);
+                    }
+                }
+            }
             DrawTextEx(titleFont, "Book", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
             GuiTextBox(textBoxBounds, text, 64, editMode);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    searchProcess = true;
+                    bookList.Erase();
                     if ( strcmp(text, searchBar.c_str()) == 0 ) {
                         text = strcpy(text, "");
                     }
@@ -820,11 +933,46 @@ class UI {
                     editMode = false;
                     if ( strcmp(text, "") == 0 ) {
                         text = strcpy(text, searchBar.c_str());
-                    } else {
-                        searchBar = string(text);
+                        searchProcess = false;
+                        bookList = searchList;
                     }
                 }
             }
+            searchBar = string(text);
+            for (int i = 0; i < searchList.GetLength(); i++) {
+                switch (searchSelected) {
+                    case 0:
+                        if (toLower(searchList[i].getTitle()).find(toLower(searchBar)) != -1) {
+                            bookList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 1:
+                        if (toLower(searchList[i].getCode()).find(toLower(searchBar)) != -1) {
+                            bookList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 2:
+                        if (toLower(searchList[i].getAuthor().getAuthorName()).find(toLower(searchBar)) != -1) {
+                            bookList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 3:
+                        if (toLower(searchList[i].getCategory().getCategoryName()).find(toLower(searchBar)) != -1) {
+                            bookList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 4:
+                        if (toLower(searchList[i].getPublisher().getPublisherName()).find(toLower(searchBar)) != -1) {
+                            bookList.PushBack(searchList[i]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            int bookCount = bookList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( bookCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
             for( int i = 0; i < permissions.GetLength(); i++ ) {
                 if ( permissions[i] == "Manage Books" ) {
                     if( GuiButton(addBtnBounds, "Add Book") ) {
@@ -846,6 +994,7 @@ class UI {
                         _publisher = strcpy(_publisher, "");
                         _category = strcpy(_category, "");
                         _quantity = strcpy(_quantity, "");
+                        int selectedCategory = -1;
                         while (!onAddOpen)
                         {
                             BeginDrawing();
@@ -856,13 +1005,36 @@ class UI {
                             }
                             DrawTextEx(titleFont, "Add new Book", Vector2{textDivBounds.x + 300, textDivBounds.y + 20}, 36, 2, DARKGRAY);
                             if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 550, 150, 40 }, "Add") ) {
+                                int authorId, publisherId, categoryId;
+                                authorId = publisherId = categoryId = -1;
                                 string title = string(_title);
                                 string author = string(_author);
                                 string publisher = string(_publisher);
                                 string category = string(_category);
                                 string code = string(_code);
                                 int quantity = atoi(_quantity);
-                                bookService->addBook(code, title, author, publisher, category, quantity);
+                                for (int i = 0; i < authorList.GetLength(); i++) {
+                                    if ( authorList[i].getAuthorName() == author ) {
+                                        authorId = i;
+                                        break;
+                                    }
+                                }
+                                for (int i = 0; i < publisherList.GetLength(); i++) {
+                                    if ( publisherList[i].getPublisherName() == publisher ) {
+                                        publisherId = i;
+                                        break;
+                                    }
+                                }
+                                for (int i = 0; i < categoryList.GetLength(); i++) {
+                                    if ( categoryList[i].getCategoryName() == category ) {
+                                        categoryId = i;
+                                        break;
+                                    }
+                                }
+                                if ( authorId == -1 || publisherId == -1 || categoryId == -1 ) {
+                                    continue;
+                                }
+                                bookService->addBook(code, title, authorList[authorId], categoryList[categoryId], publisherList[publisherId],  quantity);
                                 onAddOpen = !onAddOpen;
                             }
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 90, 250, 40 }, "Title");
@@ -886,9 +1058,63 @@ class UI {
                                 publisherEdit = !publisherEdit;
                             } 
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 410, 250, 40 }, "Category");
-                            if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 410, 450, 40 }, _category, 64, categoryEdit) ) {
-                                _category = strcpy(_category, _category);
-                                categoryEdit = !categoryEdit;
+                            if (GuiButton(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 410, 450, 40 }, _category)) {
+                                    categoryEdit = false;
+                                    int sum = 0;
+                                    Vector2 scrollOffset = { 0, 0 };
+                                    Rectangle scrollBox = { textDivBounds.x, textDivBounds.y, textDivBounds.width, textDivBounds.height };
+                                    for (int i = 0; i < categoryList.GetLength(); i++) {
+                                        sum += strlen( categoryList[i].getCategoryName().c_str() ) * 20;
+                                    }
+                                    while(!categoryEdit) {  
+                                    BeginDrawing();
+                                    ClearBackground(RAYWHITE);
+                                    DrawRectangleRec( Rectangle{ textDivBounds.x, textDivBounds.y, textDivBounds.width, textDivBounds.height - 100}, WHITE);
+                                    DrawTextEx(titleFont, "Select Category", Vector2{textDivBounds.x + 300, textDivBounds.y + 40}, 36, 2, DARKGRAY);
+                                    if( GuiButton(closeDivBounds, "X") ) {
+                                        categoryEdit = !categoryEdit;
+                                    }
+                                    Rectangle view;
+                                    GuiScrollPanel(
+                                        Rectangle{textDivBounds.x + 20,
+                                                    textDivBounds.y + 100,
+                                                    scrollBox.width - 40,
+                                                    textDivBounds.height - 300},
+                                        nullptr,
+                                        Rectangle{
+                                            0,
+                                            0,
+                                            scrollBox.width - 60,
+                                            sum / ( scrollBox.width - 40 ) * 40 + 40},
+                                        &scrollOffset, &view);
+
+                                    BeginScissorMode(view.x, view.y, view.width, view.height);
+                                    float dis = 0;
+                                    int cnt = 0;
+                                    float start = scrollBox.x + 30;
+                                    for (int i = 0; i < categoryList.GetLength(); i++) {
+                                        dis = strlen( categoryList[i].getCategoryName().c_str() ) * 20;
+                                        if ( start + dis > scrollBox.x + scrollBox.width - 60 ) {
+                                            start = scrollBox.x + 30;
+                                            cnt++;
+                                        } 
+                                        Rectangle item = { start, scrollBox.y + 30 + cnt * 40 + scrollOffset.y, dis, 30};
+                                        start += dis + 10;
+                                        if ( categoryList[i].getCategoryName() == "0" ) {
+                                            start -= dis + 10;
+                                            continue;
+                                        }
+                                        if (GuiButton(item, categoryList[i].getCategoryName().c_str())) {
+                                            selectedCategory = i; 
+                                            categoryEdit = true;
+                                        }
+                                    }
+                                    EndScissorMode();
+                                    if (selectedCategory != -1) {
+                                        _category = strcpy(_category, categoryList[selectedCategory].getCategoryName().c_str());
+                                    }
+                                    EndDrawing();
+                                }
                             }
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 490, 250, 40 }, "Quantity");
                             if ( GuiTextBox(Rectangle{ textDivBounds.x + 200, textDivBounds.y + 490, 450, 40 }, _quantity, 64, quantityEdit) ) {
@@ -914,9 +1140,9 @@ class UI {
                         bool codeEdit = false;
                         _code = strcpy(_code, bookList[idSelected - 1].getCode().c_str());
                         _title = strcpy(_title, bookList[idSelected - 1].getTitle().c_str());
-                        _author = strcpy(_author, bookList[idSelected - 1].getAuthor().c_str());
-                        _publisher = strcpy(_publisher, bookList[idSelected - 1].getPublisher().c_str());
-                        _category = strcpy(_category, bookList[idSelected - 1].getCategory().c_str());
+                        _author = strcpy(_author, bookList[idSelected - 1].getAuthor().getAuthorName().c_str());
+                        _publisher = strcpy(_publisher, bookList[idSelected - 1].getPublisher().getPublisherName().c_str());
+                        _category = strcpy(_category, bookList[idSelected - 1].getCategory().getCategoryName().c_str());
                         _quantity = strcpy(_quantity, to_string(bookList[idSelected - 1].getQuantity()).c_str());
                         while (!onEditOpen)
                         {
@@ -928,13 +1154,36 @@ class UI {
                             }
                             DrawTextEx(titleFont, "Edit Book", Vector2{textDivBounds.x + 350, textDivBounds.y + 20}, 36, 2, DARKGRAY);
                             if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 550, 150, 40 }, "Save") ) {
+                                int authorId, publisherId, categoryId;
+                                authorId = publisherId = categoryId = -1;
                                 string title = string(_title);
                                 string author = string(_author);
                                 string publisher = string(_publisher);
                                 string category = string(_category);
                                 string code = string(_code);
                                 int quantity = atoi(_quantity);
-                                bookService->updateBook(idSelected, code, title, author, publisher, category, quantity);
+                                for (int i = 0; i < authorList.GetLength(); i++) {
+                                    if ( authorList[i].getAuthorName() == author ) {
+                                        authorId = i;
+                                        break;
+                                    }
+                                }
+                                for (int i = 0; i < publisherList.GetLength(); i++) {
+                                    if ( publisherList[i].getPublisherName() == publisher ) {
+                                        publisherId = i;
+                                        break;
+                                    }
+                                }
+                                for (int i = 0; i < categoryList.GetLength(); i++) {
+                                    if ( categoryList[i].getCategoryName() == category ) {
+                                        categoryId = i;
+                                        break;
+                                    }
+                                }
+                                if ( authorId == -1 || publisherId == -1 || categoryId == -1 ) {
+                                    continue;
+                                }
+                                bookService->updateBook(idSelected, code, title, authorList[authorId], categoryList[categoryId], publisherList[publisherId], quantity);
                                 onEditOpen = !onEditOpen;
                                 idSelected = -1;
                                 rowSelected = -1;
@@ -1167,7 +1416,7 @@ class UI {
                         }
                     }
                 }
-                if ( bookList[i].getTitle() == "0" && bookList[i].getCode() == "0" && bookList[i].getAuthor() == "0" && bookList[i].getPublisher() == "0" && bookList[i].getCategory() == "0" && bookList[i].getQuantity() == 0 ) {
+                if ( ( bookList[i].getTitle() == "0" && bookList[i].getCode() == "0" && bookList[i].getQuantity() == 0 ) || bookList[i].getAuthor().getAuthorName() == "0" || bookList[i].getPublisher().getPublisherName() == "0" || bookList[i].getCategory().getCategoryName() == "0" ) {
                     continue;
                 }
                 if ( rowSelected != i ) {
@@ -1181,15 +1430,15 @@ class UI {
                         Vector2{rowBounds.x + 80, rowBounds.y + 5}, 20, 2, DARKGRAY);
                 DrawTextEx(textFont, bookList[i].getTitle().c_str(),
                         Vector2{rowBounds.x + 180, rowBounds.y + 5}, 20, 2, DARKGRAY);
-                DrawTextEx(textFont, bookList[i].getAuthor().c_str(),
+                DrawTextEx(textFont, bookList[i].getAuthor().getAuthorName().c_str(),
                         Vector2{
                             rowBounds.x + 430,
                             rowBounds.y + 5,
                         },
                         20, 2, DARKGRAY);
-                DrawTextEx(textFont, bookList[i].getPublisher().c_str(),
+                DrawTextEx(textFont, bookList[i].getPublisher().getPublisherName().c_str(),
                         Vector2{rowBounds.x + 680, rowBounds.y + 5}, 20, 2, DARKGRAY);
-                DrawTextEx(textFont, bookList[i].getCategory().c_str(),
+                DrawTextEx(textFont, bookList[i].getCategory().getCategoryName().c_str(),
                         Vector2{rowBounds.x + 930, rowBounds.y + 5}, 20, 2, DARKGRAY);
                 DrawTextEx(textFont, to_string(bookList[i].getQuantity()).c_str(),
                         Vector2{rowBounds.x + 1160, rowBounds.y + 5}, 20, 2, DARKGRAY);
@@ -1219,18 +1468,25 @@ class UI {
             }
             scrollBounds.y = currentScrollY;
             DrawRectangleRec(scrollBounds, BLACK);
+            if ( GuiDropdownBox(Rectangle{ textBoxBounds.x + 300, textBoxBounds.y, 120, textBoxBounds.height }, searchOptions, &searchSelected, searchEdit) ) {
+                searchEdit = !searchEdit;
+            }
         }
 
-        void DrawBorrowReturnTable( BorrowReturnService* borrowReturnService, UserService* userService, BookService* bookService, float wheelMove,Vector2 mousePos, string searchBar = "search") 
+        void DrawBorrowReturnTable( BorrowReturnService* borrowReturnService, UserService* userService, BookService* bookService, float wheelMove,Vector2 mousePos, string searchBar = "search borrow list") 
         {
-            List<class BorrowReturn> borrowReturnList = roleOfUser == RoleOfUser::_Member ? borrowReturnService->getBorrowList(userId) : borrowReturnService->getBorrowList();
-            int borrowReturnCount = borrowReturnList.GetLength();
-            const float scrollHeight = scrollMove.height - ( 30 * (int)( borrowReturnCount / ( renderDefault + 1 ) ) );
-            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            List<class BorrowReturn> borrowReturnList; 
+            List<class BorrowReturn> searchList = roleOfUser == RoleOfUser::_Member ? borrowReturnService->getBorrowList(userId) : borrowReturnService->getBorrowList();
+            if ( !searchProcess ) {
+                borrowReturnList = roleOfUser == RoleOfUser::_Member ? borrowReturnService->getBorrowList(userId) : borrowReturnService->getBorrowList();
+            }
+            const char *searchOptions = "BookTitle;Username;BorrowDate;ReturnDate;DayLeft;Status";
             DrawTextEx(titleFont, "Borrow Return List", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
             GuiTextBox( Rectangle{ textBoxBounds.x + 150, textBoxBounds.y, textBoxBounds.width, textBoxBounds.height }, text, 64, editMode);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                if (CheckCollisionPointRec(GetMousePosition(), Rectangle{ textBoxBounds.x + 150, textBoxBounds.y, textBoxBounds.width, textBoxBounds.height}) ) {
+                    searchProcess = true;
+                    borrowReturnList.Erase();
                     if ( strcmp(text, searchBar.c_str()) == 0 ) {
                         text = strcpy(text, "");
                     }
@@ -1239,11 +1495,51 @@ class UI {
                     editMode = false;
                     if ( strcmp(text, "") == 0 ) {
                         text = strcpy(text, searchBar.c_str());
-                    } else {
-                        searchBar = string(text);
+                        searchProcess = false;
+                        borrowReturnList = searchList;
                     }
                 }
             }
+            searchBar = string(text);
+            for (int i = 0; i < searchList.GetLength(); i++) {
+                switch (searchSelected) {
+                    case 0:
+                        if ( toLower(bookService->getBook( searchList[i].getBookId() )[0].getTitle()).find(searchBar) != -1) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 1:
+                        if ( toLower(userService->getUser( searchList[i].getUserId() )[0].getUsername()).find(searchBar) != -1) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 2:
+                        if (searchList[i].getBorrowAt().getFormattedDate().find(searchBar) != -1) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 3:
+                        if (searchList[i].getReturnAt().getFormattedDate().find(searchBar) != -1) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 4:
+                        if (searchList[i].getNumOfDays() == atoi(searchBar.c_str())) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 5:
+                        if ( searchList[i].getStatus() == 0 && toLower(searchBar) == toLower("Borrowed")) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        } else if (searchList[i].getStatus() == 1 && toLower(searchBar) == toLower("Returned")) {
+                            borrowReturnList.PushBack(searchList[i]);
+                        }
+                        break;
+                }
+            }
+            int borrowReturnCount = borrowReturnList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( borrowReturnCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
             for( int i = 0; i < permissions.GetLength(); i++ ) {
                 if ( permissions[i] == "Return Books" ) {
                     if ( GuiButton(deleteBtnBounds, "Return Books") && idSelected > 0 ) { 
@@ -1276,7 +1572,7 @@ class UI {
             DrawRectangleRec(tableBounds, LIGHTGRAY);
             DrawTextEx(textFont, "ID", Vector2{tableBounds.x + 10, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "Book Tite", Vector2{tableBounds.x + 100, tableBounds.y + 10}, 20, 2, DARKGRAY);
-            DrawTextEx(textFont, "Username", Vector2{tableBounds.x + 300, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Username", Vector2{tableBounds.x + 380, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "BorrowDate", Vector2{tableBounds.x + 550, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "ReturnDate", Vector2{tableBounds.x + 750, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "Day left", Vector2{tableBounds.x + 1000, tableBounds.y + 10}, 20, 2, DARKGRAY);
@@ -1335,7 +1631,7 @@ class UI {
                 DrawTextEx(textFont, bookService->getBook( borrowReturnList[i].getBookId() )[0].getTitle().c_str(),
                         Vector2{rowBounds.x + 100, rowBounds.y + 5}, 20, 2, DARKGRAY);
                 DrawTextEx(textFont, userService->getUser( borrowReturnList[i].getUserId() )[0].getUsername().c_str(),
-                        Vector2{rowBounds.x + 300, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                        Vector2{rowBounds.x + 380, rowBounds.y + 5}, 20, 2, DARKGRAY);
                 DrawTextEx(textFont, borrowReturnList[i].getBorrowAt().getFormattedDate().c_str(),
                         Vector2{ rowBounds.x + 550, rowBounds.y + 5, }, 20, 2, DARKGRAY);
                 DrawTextEx(textFont, borrowReturnList[i].getReturnAt().getFormattedDate().c_str(),
@@ -1370,19 +1666,26 @@ class UI {
             }
             scrollBounds.y = currentScrollY;
             DrawRectangleRec(scrollBounds, BLACK);
+            if ( GuiDropdownBox(Rectangle{ textBoxBounds.x + 450, textBoxBounds.y, 120, textBoxBounds.height }, searchOptions, &searchSelected, searchEdit) ) {
+                searchEdit = !searchEdit;
+            }
         }
 
        
         void DrawAuthorTable( AuthorService* authorService, float wheelMove,Vector2 mousePos, string searchBar = "search author") 
         {
-            List<class Author> authorList = authorService->getAuthor();
-            int authorCount = authorList.GetLength();
-            const float scrollHeight = scrollMove.height - ( 30 * (int)( authorCount / ( renderDefault + 1 ) ) );
-            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
+            List<class Author> authorList;
+            List<class Author> searchList = authorService->getAuthor();
+            if ( !searchProcess ) {
+                authorList = authorService->getAuthor();
+            }
+            const char *searchOptions = "AuthorName;AuthorInfo;BirthDate";
             DrawTextEx(titleFont, "Author", Vector2{tableBounds.x, tableBounds.y - 50}, 36, 2, DARKGRAY);
             GuiTextBox(textBoxBounds, text, 64, editMode);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(GetMousePosition(), textBoxBounds)) {
+                    searchProcess = true;
+                    authorList.Erase();
                     if ( strcmp(text, searchBar.c_str()) == 0 ) {
                         text = strcpy(text, "");
                     }
@@ -1391,11 +1694,34 @@ class UI {
                     editMode = false;
                     if ( strcmp(text, "") == 0 ) {
                         text = strcpy(text, searchBar.c_str());
-                    } else {
-                        searchBar = string(text);
+                        searchProcess = false;
+                        authorList = searchList;
                     }
                 }
             }
+            for (int i = 0; i < searchList.GetLength(); i++) {
+                switch (searchSelected) {
+                    case 0:
+                        if ( toLower(searchList[i].getAuthorName()).find(searchBar) != -1) {
+                            authorList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 1:
+                        if ( toLower(searchList[i].getAuthorInfo()).find(searchBar) != -1) {
+                            authorList.PushBack(searchList[i]);
+                        }
+                        break;
+                    case 2:
+                        if (searchList[i].getBirthDate().getFormattedDate().find(searchBar) != -1) {
+                            authorList.PushBack(searchList[i]);
+                        }
+                        break;
+                }
+            }
+            searchBar = string(text);
+            int authorCount = authorList.GetLength();
+            const float scrollHeight = scrollMove.height - ( 30 * (int)( authorCount / ( renderDefault + 1 ) ) );
+            Rectangle scrollBounds = { scrollMove.x, scrollMove.y, 30, scrollHeight };
             for( int i = 0; i < permissions.GetLength(); i++ ) {
                 if ( permissions[i] == "Manage Authors" ) {
                     if( GuiButton(addBtnBounds, "Add Author") ) {
@@ -1433,7 +1759,7 @@ class UI {
                                 _authorInfo = strcpy(_authorInfo, _authorInfo);
                                 authorInfoEdit = !authorInfoEdit;
                             }
-                            DrawTextEx(titleFont, "Birth Date", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 36, 2, DARKGRAY);
+                            DrawTextEx(titleFont, "Birth Date", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 30, 2, DARKGRAY);
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 370, 100, 40 }, "Day");
                             if ( GuiTextBox(Rectangle{ textDivBounds.x + 150, textDivBounds.y + 370, 100, 40 }, day, 64, dayEdit) ) {
                                 day = strcpy(day, day);
@@ -1510,7 +1836,7 @@ class UI {
                                 _authorInfo = strcpy(_authorInfo, _authorInfo);
                                 authorInfoEdit = !authorInfoEdit;
                             }
-                            DrawTextEx(titleFont, "Birth Date", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 36, 2, DARKGRAY);
+                            DrawTextEx(titleFont, "Birth Date", Vector2{textDivBounds.x + 100, textDivBounds.y + 300}, 30, 2, DARKGRAY);
                             GuiLabel(Rectangle{ textDivBounds.x + 100, textDivBounds.y + 370, 100, 40 }, "Day");
                             if ( GuiTextBox(Rectangle{ textDivBounds.x + 150, textDivBounds.y + 370, 100, 40 }, day, 64, dayEdit) ) {
                                 day = strcpy(day, day);
@@ -1663,15 +1989,21 @@ class UI {
                 }
                 scrollBounds.y = currentScrollY;
                 DrawRectangleRec(scrollBounds, BLACK);
+                if ( GuiDropdownBox(Rectangle{ textBoxBounds.x + 300, textBoxBounds.y, 120, textBoxBounds.height }, searchOptions, &searchSelected, searchEdit) ) {
+                    searchEdit = !searchEdit;
+                }
         }
 
         void LoadText() {
-            textFont = LoadFontEx("components/UI_Console/font/times.ttf", 20, 0, 0);
-            titleFont = LoadFontEx("components/UI_Console/font/times.ttf", 40, 0, 0);
+            textFont = LoadFontEx("components/UI_Console/font/NotoSans-Regular.ttf", 20, nullptr, 0);
+            titleFont = LoadFontEx("components/UI_Console/font/NotoSans-Regular.ttf", 40, nullptr, 0);
             icon = LoadImage("components/UI_Console/logo.png");
             logo = LoadTextureFromImage(icon);
             UnloadImage(icon);
             GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+            GuiSetStyle(BUTTON, BORDER_COLOR_NORMAL, ColorToInt(Color{ 39, 229, 245, 26 }));
+            GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, ColorToInt(Color{ 39, 229, 245, 26 }));
+            GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, ColorToInt(Color{ 0, 255, 0, 255 }));
             GuiSetFont(textFont);
         }
 
@@ -1723,7 +2055,6 @@ class UI {
                     string _password = string(password);
                     List<class User> userList = userService->getUser();
                     for (int i = 0; i < userList.GetLength(); i++) {
-                        TraceLog(LOG_INFO, "Id: %d Username: %s, Password: %s Email: %s Phone: %s Role: %s", userList[i].getUserId() , userList[i].getUsername().c_str(), userList[i].getPassword().c_str(), userList[i].getEmail().c_str(), userList[i].getPhone().c_str(), userList[i].getRole()->getRoleName().c_str()); 
                         if ( userList[i].getUsername() == _username && userList[i].getPassword() == _password ) {
                             userId = userList[i].getUserId();
                             if ( userList[i].getRole()->getRoleName() == "Admin" ) {
@@ -1802,6 +2133,9 @@ class UI {
 
         State DrawBackButton(State currentState) {
             if (GuiButton(Rectangle{tableBounds.x + 1130, tableBounds.y - 50, 150, 40}, GuiIconText(ICON_ARROW_LEFT, "Back"))) {
+                searchSelected = 0;
+                searchEdit = false;
+                searchProcess = false;
                 return State::Menu;
             }
             return currentState;
@@ -1837,7 +2171,7 @@ class UI {
             if ( GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Borrow Return") ) {
                 scrollPosition = 0;
                 scrollRenderTable = 0;
-                text = strcpy(text, "search borrow return");
+                text = strcpy(text, "search borrow list");
                 return State::BorrowReturn;
             }
             if (GuiButton(Rectangle{ (int)(windowWidth / 2) + 200, 450, 200, 75 }, "Author")) {
@@ -1876,7 +2210,7 @@ class UI {
             if ( GuiButton(Rectangle{ (int)(windowWidth / 2) - 400, 450, 200, 75 }, "Borrow Return") ) {
                 scrollPosition = 0;
                 scrollRenderTable = 0;
-                text = strcpy(text, "search borrow return");
+                text = strcpy(text, "search borrow list");
                 return State::BorrowReturn;
             }
             if (GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Author")) {
@@ -1915,7 +2249,7 @@ class UI {
             if (GuiButton(Rectangle{ (int)(windowWidth / 2) - 400, 450, 200, 75 }, "Borrow Return")) {
                 scrollPosition = 0;
                 scrollRenderTable = 0;
-                text = strcpy(text, "search borrow return");
+                text = strcpy(text, "search borrow list");
                 return State::BorrowReturn;
             }
             if (GuiButton(Rectangle{ (int)(windowWidth / 2) - 100, 450, 200, 75 }, "Author")) {

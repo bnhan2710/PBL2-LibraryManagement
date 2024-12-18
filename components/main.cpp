@@ -55,7 +55,7 @@ int main(void)
                 break;
             }
             case State::Book: {
-                ui.DrawBookTable( bookService, borrowReturnService, wheelMove, mousePos);
+                ui.DrawBookTable( bookService, borrowReturnService, authorService, categoryService, publisherService, wheelMove, mousePos);
                 currentState = ui.DrawBackButton(currentState);
                 break;
             }

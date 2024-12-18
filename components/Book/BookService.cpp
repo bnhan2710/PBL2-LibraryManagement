@@ -17,14 +17,14 @@ BookService* BookService::initBookService() {
 BookService::~BookService() {
 }
 
-void BookService::addBook(const string& code, const string& title, const string& author, const string& category, const string& publisher, const int quantity) {
+void BookService::addBook(const string& code, const string& title, Author& author, Category& category, Publisher& publisher, const int quantity) {
     int bookId = this->_bookList.GetLength() + 1;
     Book book(bookId, code, title, author, category, publisher, quantity);
     this->_bookList.InsertLast(book);
     this->_bookRepository->addBook(book);
 }
 
-void BookService::updateBook(const int bookId, const string& code, const string& title, const string& author, const string& category, const string& publisher, const int quantity) {
+void BookService::updateBook(const int bookId, const string& code, const string& title, Author& author, Category& category, Publisher& publisher, const int quantity) {
     Book isExistedBook = this->_bookRepository->getBookById( bookId );
     if (isExistedBook.getBookId() == 0) {
         return;
@@ -45,9 +45,9 @@ void BookService::deleteBook(const int bookId) {
     }
     isExistedBook.setCode("0");
     isExistedBook.setTitle("0");
-    isExistedBook.setAuthor("0");
-    isExistedBook.setCategory("0");
-    isExistedBook.setPublisher("0");
+    /* isExistedBook.setAuthor("0"); */
+    /* isExistedBook.setCategory("0"); */
+    /* isExistedBook.setPublisher("0"); */
     isExistedBook.setQuantity(0);
     this->_bookRepository->updateBook(isExistedBook);
 }

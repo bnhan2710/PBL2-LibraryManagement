@@ -12,8 +12,8 @@ private:
 public:
     ~BookService();
     static BookService* initBookService();
-    void addBook(const string&, const string&, const string&, const string&, const string&, const int);
-    void updateBook(const int, const string&, const string&, const string&, const string&, const string&, const int);
+    void addBook(const string&, const string&, Author&, Category&, Publisher&, const int);
+    void updateBook(const int, const string&, const string&, Author&, Category&, Publisher&, const int);
     void deleteBook(const int);
     List<Book> getBook( int );
     List<Book> getBook();
