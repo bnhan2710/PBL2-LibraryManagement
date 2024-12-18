@@ -1524,14 +1524,14 @@ class UI {
                         }
                         break;
                     case 4:
-                        if (searchList[i].getNumOfDays() == atoi(searchBar.c_str())) {
+                        if (to_string(searchList[i].getNumOfDays()).find(searchBar) != -1) {
                             borrowReturnList.PushBack(searchList[i]);
                         }
                         break;
                     case 5:
-                        if ( searchList[i].getStatus() == 0 && toLower(searchBar) == toLower("Borrowed")) {
+                        if ( searchList[i].getStatus() == 0 && toLower(toLower("Borrowed")).find(toLower(searchBar)) != -1 ) {
                             borrowReturnList.PushBack(searchList[i]);
-                        } else if (searchList[i].getStatus() == 1 && toLower(searchBar) == toLower("Returned")) {
+                        } else if ( searchList[i].getStatus() == 1 && toLower("Returned").find(toLower(searchBar)) != -1) {
                             borrowReturnList.PushBack(searchList[i]);
                         }
                         break;
