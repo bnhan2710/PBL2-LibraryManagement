@@ -28,7 +28,8 @@ void CategoryRepository::addCategory(const Category& category) {
     }
 
     outFile << category.getCategoryId() << "|"
-            << category.getCategoryName() << endl;
+            << category.getCategoryName() << "|"
+            << category.getNumOfBooks() << endl;
 
     outFile.close();
     cout << "Add category successful" << endl;
@@ -46,16 +47,18 @@ void CategoryRepository::updateCategory(const Category& category) {
     bool found = false;
     while (getline(inFile, line)) {
         stringstream ss(line);
-        string idStr, name;
+        string idStr, name, numOfBooksStr;
 
         getline(ss, idStr, '|');
         getline(ss, name, '|');
+        getline(ss, numOfBooksStr, '|');
 
         int id = atoi(idStr.c_str());
 
         if (id == category.getCategoryId()) {
             tempFile << category.getCategoryId() << "|"
-                     << category.getCategoryName() << endl;
+                     << category.getCategoryName() << "|"
+                     << category.getNumOfBooks() << endl;
             found = true;
         } else {
             tempFile << idStr << "|" << name << endl;
@@ -87,17 +90,20 @@ void CategoryRepository::deleteCategory(int categoryId) {
     bool found = false;
     while (getline(inFile, line)) {
         stringstream ss(line);
-        string idStr, name;
+        string idStr, name, numOfBooksStr;
 
         getline(ss, idStr, '|');
         getline(ss, name, '|');
+        getline(ss, numOfBooksStr, '|');
 
         int id = atoi(idStr.c_str());
 
         if (id == categoryId) {
             found = true;
         } else {
-            tempFile << idStr << "|" << name << endl;
+            tempFile << idStr << "|" 
+                     << name << "|"
+                     << numOfBooksStr << endl;
         }
     }
 
@@ -124,16 +130,17 @@ Category CategoryRepository::getCategoryById(int categoryId) {
     string line;
     while (getline(inFile, line)) {
         stringstream ss(line);
-        string idStr, name;
+        string idStr, name, numOfBooksStr;
 
         getline(ss, idStr, '|');
         getline(ss, name, '|');
+        getline(ss, numOfBooksStr, '|');
 
         int id = atoi(idStr.c_str());
 
         if (id == categoryId) {
             inFile.close();
-            return Category(id, name);
+            return Category(id, name, atoi(numOfBooksStr.c_str()));
         }
     }
 
@@ -153,14 +160,15 @@ List<Category> CategoryRepository::getAllCategories() {
     string line;
     while (getline(inFile, line)) {
         stringstream ss(line);
-        string idStr, name;
+        string idStr, name, numOfBooksStr;
 
         getline(ss, idStr, '|');
         getline(ss, name, '|');
+        getline(ss, numOfBooksStr, '|');
 
         int id = atoi(idStr.c_str());
 
-        categories.InsertLast(Category(id, name));
+        categories.InsertLast(Category(id, name, atoi(numOfBooksStr.c_str())));
     }
 
     inFile.close();

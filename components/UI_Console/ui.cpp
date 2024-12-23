@@ -408,8 +408,9 @@ class UI {
             }
         }
             
-        void DrawCategoryTable( CategoryService* categoryService, float wheelMove,Vector2 mousePos, string searchBar = "search category") 
+        void DrawCategoryTable( CategoryService* categoryService, BookService* bookService, float wheelMove,Vector2 mousePos, string searchBar = "search category") 
         {  
+            List<class Book> bookList = bookService->getBook();
             List<class Category> categoryList;
             List<class Category> searchList = categoryService->getCategory();
             if ( !searchProcess ) {
@@ -493,7 +494,7 @@ class UI {
                             }
                             if( GuiButton(Rectangle{ ( windowWidth / 2 ) - 50, textDivBounds.y + 460, 150, 40 }, "Save") ) {
                                 string categoryName = string(_categoryName);
-                                categoryService->updateCategory(idSelected, categoryName );
+                                categoryService->updateCategory(idSelected, categoryName);
                                 onEditOpen = !onEditOpen;
                                 idSelected = -1;
                                 rowSelected = -1;
@@ -531,6 +532,7 @@ class UI {
             DrawRectangleRec(tableBounds, LIGHTGRAY);
             DrawTextEx(textFont, "ID", Vector2{tableBounds.x + 10, tableBounds.y + 10}, 20, 2, DARKGRAY);
             DrawTextEx(textFont, "Category Name", Vector2{tableBounds.x + 200, tableBounds.y + 10}, 20, 2, DARKGRAY);
+            DrawTextEx(textFont, "Num of Books", Vector2{tableBounds.x + 500, tableBounds.y + 10}, 20, 2, DARKGRAY);
 
             if (wheelMove != 0.0 && wheelMove > 0 ||
                 (CheckCollisionPointRec(mousePos, scrollBounds) &&
@@ -574,7 +576,7 @@ class UI {
                         }
                     }
                 }
-                if ( categoryList[i].getCategoryName() == "0" ) {
+                if ( categoryList[i].getCategoryName() == "0" && categoryList[i].getNumOfBooks() == 0 ) {
                     continue;
                 }
                 if ( rowSelected != i ) {
@@ -586,6 +588,8 @@ class UI {
                         Vector2{rowBounds.x + 10, rowBounds.y + 5}, 20, 2, DARKGRAY);
                 DrawTextEx(textFont, categoryList[i].getCategoryName().c_str(),
                         Vector2{rowBounds.x + 200, rowBounds.y + 5}, 20, 2, DARKGRAY);
+                DrawTextEx(textFont, TextFormat("%d", categoryList[i].getNumOfBooks()),
+                        Vector2{rowBounds.x + 500, rowBounds.y + 5}, 20, 2, DARKGRAY);
                 ++cnt;
             }
 

@@ -20,7 +20,7 @@ CategoryService::~CategoryService() {
 void CategoryService::addCategory(const string& categoryName) {
     int categoryId = this->_categoriesList.GetLength() + 1;
 
-    Category category(categoryId, categoryName);
+    Category category(categoryId, categoryName, 0);
 
     this->_categoriesList.InsertLast(category);
     this->_categoriesRepository->addCategory(category);
@@ -41,6 +41,7 @@ void CategoryService::deleteCategory(int categoryId) {
         return;
     }
     isExistedCategory.setCategoryName("0");
+    isExistedCategory.setNumOfBooks(0);
     this->_categoriesRepository->updateCategory(isExistedCategory);
 }
 

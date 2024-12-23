@@ -11,7 +11,8 @@ CategoryRepository* BookRepository::_categoryRepository = nullptr;
 PublisherRepository* BookRepository::_publisherRepository = nullptr;
 const char* BookRepository::_bookFileName = "database/Book.txt";
 const char* BookRepository::_bookTempFileName = "database/TempBook.txt";
-
+const char* BookRepository::_categoryFileName = "database/Category.txt";
+const char* BookRepository::_categoryTempFileName = "database/TempCategory.txt";
 BookRepository::BookRepository() {}
 
 BookRepository* BookRepository::initBookRepository() {
@@ -322,5 +323,35 @@ List<Book> BookRepository::getAllBooks() {
         authorId = categoryId = publisherId = -1;
     }
     inFile.close();
+
+    ifstream inCategoryFile(_categoryFileName);
+    ofstream tempCategoryFile(_categoryTempFileName, ios::out);
+    if (!inCategoryFile.is_open() || !tempCategoryFile.is_open()) {
+        cerr << "Can't not open file to read and write" << endl;
+        return bookList;
+    }
+    while (getline(inCategoryFile, line)) {
+        stringstream ss(line);
+        string idStr, name, numOfBooksStr;
+
+        getline(ss, idStr, '|');
+        getline(ss, name, '|');
+        getline(ss, numOfBooksStr, '|');
+
+        int id = atoi(idStr.c_str());
+        int numOfBooks = 0;
+        for( int i = 0; i < bookList.GetLength(); i++) {
+            if (bookList[i].getCategory().getCategoryId() == id) {
+                numOfBooks++;
+            }
+        }
+        tempCategoryFile << idStr << "|"
+                         << name << "|"
+                         << numOfBooks << endl;
+    }
+    inCategoryFile.close();
+    tempCategoryFile.close();
+    remove(_categoryFileName);
+    rename(_categoryTempFileName, _categoryFileName);
     return bookList;
 }

@@ -45,7 +45,7 @@ int main(void)
                 break;
             }
             case State::Category: {
-                ui.DrawCategoryTable( categoryService, wheelMove, mousePos);
+                ui.DrawCategoryTable( categoryService, bookService, wheelMove, mousePos);
                 currentState = ui.DrawBackButton(currentState);
                 break;
             }

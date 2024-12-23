@@ -5,6 +5,7 @@
 #include <fstream>
 #include "../../utils/List.h"
 using namespace std;
+class BookRepository;
 class CategoryRepository {
 private:
     static CategoryRepository* _categoryRepository;

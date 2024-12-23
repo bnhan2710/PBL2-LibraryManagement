@@ -16,6 +16,8 @@ private:
     static PublisherRepository* _publisherRepository;
     static const char* _bookFileName;
     static const char* _bookTempFileName;
+    static const char* _categoryFileName;
+    static const char* _categoryTempFileName;
     BookRepository();
 public:
     static BookRepository *initBookRepository();
